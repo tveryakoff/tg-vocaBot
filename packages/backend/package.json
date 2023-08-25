@@ -4,9 +4,7 @@
   "description": "**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**",
   "main": "./src/index.ts",
   "scripts": {
-    "build": "npx tsc --outDir ./dist",
-    "start": "node ./dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q ./dist/index.js\"",
+    "dev": "nodemon --watch ./src -e js,ts ./src/index.ts",
     "lint:fix": "TIMING=1 eslint .src/ --fix",
     "lint": "TIMING=1 eslint .src/ --max-warnings 0"
   },
@@ -18,7 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^7.4.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
