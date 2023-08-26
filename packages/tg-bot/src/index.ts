@@ -13,7 +13,7 @@ bot.on('text', async (ctx) => {
       throw new Error('No user')
     }
     const response = await http.post('user', user)
-    ctx.reply(response?.data)
+    ctx.reply(`Hello ${response?.data?.user?.userName}!`)
   } catch (e) {
     console.log('error', e)
   }

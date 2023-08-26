@@ -4,10 +4,6 @@ const { Schema } = mongoose
 const USER_MODEL_NAME = 'User'
 
 const userSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
   userName: {
     type: String,
   },
@@ -21,12 +17,20 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  languagePair: [
-    {
-      target: String,
-      translation: String,
-    },
-  ],
+  languagePair: {
+    type: [
+      {
+        target: String,
+        translation: String,
+      },
+    ],
+    default: [
+      {
+        target: 'en',
+        translation: 'rus',
+      },
+    ],
+  },
 })
 
 const userModel = mongoose.model(USER_MODEL_NAME, userSchema)
