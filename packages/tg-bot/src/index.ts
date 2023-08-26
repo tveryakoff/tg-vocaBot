@@ -12,8 +12,8 @@ bot.on('text', async (ctx) => {
     if (!user) {
       throw new Error('No user')
     }
-    const response = await http.post('user', user)
-    ctx.reply(`Hello ${response?.data?.user?.userName}!`)
+    const response = await http.post('user/add-word', user)
+    ctx.reply(response?.data)
   } catch (e) {
     console.log('error', e)
   }

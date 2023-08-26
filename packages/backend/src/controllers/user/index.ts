@@ -24,4 +24,14 @@ router.route('/').post(async (req, res) => {
   }
 })
 
+router.route('/add-word').post(async (req, res) => {
+  const user = await UserModel.findOne({ tgId: req.body.id })
+  if (!user) {
+    throw new Error('No user')
+  }
+  await user.addWordToDictionary({ value: 'Hello', translation: 'привет' })
+
+  return res.send(`word has been added Hello - привет`)
+})
+
 export default router
