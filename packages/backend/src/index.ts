@@ -1,14 +1,15 @@
 import express, { Express, Request, Response } from 'express'
 import dotenv from 'dotenv'
 import connectMongoDb from './db'
+import router from './router'
 
 dotenv.config()
 
 const app: Express = express()
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello world!')
-})
+app.use(express.json())
+
+app.use('/api', router)
 
 connectMongoDb().then(() => {
   app.listen(3000, () => {

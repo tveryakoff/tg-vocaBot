@@ -1,0 +1,27 @@
+{
+  "name": "tg-bot",
+  "version": "1.0.0",
+  "main": ".src/index.ts",
+  "scripts": {
+    "dev": "nodemon --watch ./src -e js,ts ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tveriakov Dmitrii",
+  "license": "ISC",
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
+    "telegraf": "^4.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@personal.bitbucket.org:bigdict-tg/monorepo.git"
+  },
+  "description": "",
+  "devDependencies": {
+    "node-ts": "^6.0.1",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  }
+}
