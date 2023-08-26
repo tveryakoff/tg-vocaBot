@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import connectMongoDb from './db'
 import router from './router'
