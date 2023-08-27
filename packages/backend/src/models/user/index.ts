@@ -1,4 +1,4 @@
-import mongoose, { Schema, ObjectId } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import { dictionarySchema } from '../dictionary'
 import WordModel from '../word'
 
@@ -15,7 +15,7 @@ const userSchema = new Schema(
     lastName: {
       type: String,
     },
-    tgId: {
+    tgIdHash: {
       type: String,
       required: true,
     },
