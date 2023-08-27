@@ -15,7 +15,7 @@ const userSchema = new Schema(
     lastName: {
       type: String,
     },
-    tgIdHash: {
+    tgId: {
       type: String,
       required: true,
     },
@@ -33,7 +33,6 @@ const userSchema = new Schema(
       addWordToDictionary: async function (wordData) {
         const word = new WordModel(wordData)
         await word.save()
-        //@ts-ignore
         this.dictionary.words.push(word._id)
         this.save()
       },

@@ -12,7 +12,7 @@
     "@types/axios": "^0.14.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
-    "telegraf": "^4.12.2"
+    "grammy": "^1.18.1"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,7 @@
   },
   "description": "",
   "devDependencies": {
-    "node-ts": "^6.0.1",
-    "nodemon": "^3.0.1",
-    "typescript": "^5.2.2"
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "nodemon": "^3.0.1"
   }
 }

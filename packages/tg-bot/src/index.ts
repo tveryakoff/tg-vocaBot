@@ -1,35 +1,53 @@
-import { Telegraf } from 'telegraf'
+import { Bot, Context, Api } from 'grammy'
+import type { Update, UserFromGetMe } from 'grammy/types'
+
 import dotenv from 'dotenv'
 import http from './http'
+import { NextFunction } from 'express'
 
 dotenv.config()
 
-const bot = new Telegraf(`${process.env.API_KEY_BOT}`)
-bot.telegram.setMyCommands([
-  {
-    command: 'new_word',
-    description: 'Add new word to your vocabulary',
-  },
-  {
-    command: 'lean_words',
-    description: "Let's learn your words",
-  },
+class MyContext extends Context {
+  public jwtToken: string | null
+
+  constructor(update: Update, api: Api, me: UserFromGetMe) {
+    super(update, api, me)
+    this.jwtToken = null
+  }
+}
+
+const bot = new Bot(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
+
+bot.api.setMyCommands([
+  { command: 'start', description: 'Start the bot' },
+  { command: 'help', description: 'Show help text' },
+  { command: 'settings', description: 'Open settings' },
 ])
 
-bot.start(async (ctx) => {
+bot.command('start', async (ctx: MyContext) => {
   try {
     const user = ctx.from
     if (!user) {
       throw new Error('No user')
     }
-    const response = await http.post('user', { user, token: process.env.API_KEY_BOT })
+    const response = await http.post('auth/tg', { user, key: process.env.API_KEY_BOT })
+    ctx.jwtToken = response?.data?.jwtToken
     ctx.reply(response?.data)
   } catch (e) {
     console.log('error', e)
   }
 })
 
-bot.command('new_word', async (ctx) => {
+// Try to log a user in if ctx.jwtToken is missing
+bot.use(async (ctx: MyContext, next: NextFunction) => {
+  if (!ctx.jwtToken) {
+    const response = await http.post('auth/tg', { user: ctx.from, key: process.env.API_KEY_BOT })
+    ctx.jwtToken = response?.data?.jwtToken
+  }
+  await next()
+})
+
+bot.command('new_word', async (ctx: MyContext) => {
   try {
     ctx.reply(`Задайте слово для добавления в формате "слово - перевод"`)
   } catch (e) {
@@ -37,7 +55,7 @@ bot.command('new_word', async (ctx) => {
   }
 })
 
-bot.on('text', async (ctx) => {
+bot.on('message', async (ctx: MyContext) => {
   try {
     const user = ctx.from
     console.log(user)
@@ -47,7 +65,7 @@ bot.on('text', async (ctx) => {
     const pattern = new RegExp('^(.*?) - (.*)$')
     const message = ctx.update?.message?.text
 
-    if (pattern.test(message)) {
+    if (message && pattern.test(message)) {
       const wordsPair = pattern.exec(message)
       if (wordsPair) {
         const [, word, translation] = wordsPair
@@ -69,4 +87,4 @@ bot.on('text', async (ctx) => {
   }
 })
 
-bot.launch()
+bot.start()

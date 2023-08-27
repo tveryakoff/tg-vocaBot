@@ -1,8 +1,8 @@
 export type User = {
-  tgIdHash: string
-  firstName: string
-  lastName: string
-  userName: string
+  tgId: string
+  firstName?: string
+  lastName?: string
+  userName?: string
 }
 
 export type UserRequest = {

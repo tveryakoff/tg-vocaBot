@@ -4,7 +4,7 @@
   "description": "**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**",
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "nodemon --watch ./src -e js,ts ./src/index.ts",
+    "dev": "nodemon ./src/index.ts",
     "lint:fix": "TIMING=1 eslint .src/ --fix",
     "lint": "TIMING=1 eslint .src/ --max-warnings 0"
   },
@@ -15,19 +15,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.5.2",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
     "concurrently": "^8.2.1",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^3.0.1",
-    "typescript": "^5.2.2"
+    "prettier": "^3.0.2",
+    "tsc-watch": "^6.0.4"
   }
 }
