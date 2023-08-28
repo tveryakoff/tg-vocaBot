@@ -44,7 +44,6 @@ bot.use(async (ctx: MyContext, next: NextFunction) => {
     const response = await http.post('auth/tg', { user: ctx.from, key: process.env.API_KEY_BOT })
     ctx.jwtToken = response?.data?.jwtToken
   }
-  console.log('toen', ctx?.jwtToken)
   return next()
 })
 
