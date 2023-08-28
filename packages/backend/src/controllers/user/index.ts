@@ -4,13 +4,25 @@ import UserModel from '../../models/user'
 const router = express.Router()
 
 router.route('/add-word').post(async (req, res) => {
-  const user = await UserModel.findOne({ tgId: req.body.id })
+  //@ts-ignore
+  const reqUser = req.user;
+  if (!reqUser) {
+    return res.status(401).send('User not found')
+  }
+  const reqWordsPair = req.body.wordsPair;
+  const user = await UserModel.findOne({ tgId: reqUser.tgId })
   if (!user) {
     throw new Error('No user')
   }
-  await user.addWordToDictionary({ value: 'Hello', translation: 'привет' })
+  if (!reqWordsPair) {
+    throw new Error('No words pair')
+  }
 
-  return res.send(`word has been added Hello - привет`)
+  const word = reqWordsPair.word.trim().toLowerCase();
+  const translation = reqWordsPair.translation.trim().toLowerCase();
+  await user.addWordToDictionary({ value: word, translation: translation })
+
+  return res.send(`Word has been added ${word} - ${reqWordsPair.translation}`)
 })
 
 export default router

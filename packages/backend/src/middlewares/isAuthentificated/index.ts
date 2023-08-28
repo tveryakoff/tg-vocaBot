@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { getUserTgIdHashFromToken } from '../../utils/auth'
+import { getUserTgIdFromToken } from '../../utils/auth'
 import User from '../../models/user'
 
 const getBearerTokenFromHeader = (authToken: string) => {
@@ -13,16 +13,17 @@ const getBearerTokenFromHeader = (authToken: string) => {
  *
  * Authenticates user via header with jwt token and saves user from db into req object
  */
-const auth = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.headers.authorization) {
+const isAuthentificated = async (req: Request, res: Response, next: NextFunction) => {
+  //@ts-ignore
+  if (!req.headers.authorization || req.user) {
     return next()
   }
   const jwtToken = getBearerTokenFromHeader(req.headers.authorization || '')
   if (!jwtToken) {
     return next()
   }
-  const tgIdHash = getUserTgIdHashFromToken(jwtToken)
-  const user = await User.findOne({ tgIdHash })
+  const tgId = getUserTgIdFromToken(jwtToken)
+  const user = await User.findOne({ tgId })
   if (user) {
     //@ts-ignore
     req.user = user
@@ -30,4 +31,4 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
   return next()
 }
 
-export default auth
+export default isAuthentificated

@@ -32,7 +32,7 @@ bot.command('start', async (ctx: MyContext) => {
     }
     const response = await http.post('auth/tg', { user, key: process.env.API_KEY_BOT })
     ctx.jwtToken = response?.data?.jwtToken
-    ctx.reply(response?.data)
+    ctx.reply(`Hello ${response?.data?.user?.userName}!`)
   } catch (e) {
     console.log('error', e)
   }
@@ -44,7 +44,8 @@ bot.use(async (ctx: MyContext, next: NextFunction) => {
     const response = await http.post('auth/tg', { user: ctx.from, key: process.env.API_KEY_BOT })
     ctx.jwtToken = response?.data?.jwtToken
   }
-  await next()
+  console.log('toen', ctx?.jwtToken)
+  return next()
 })
 
 bot.command('new_word', async (ctx: MyContext) => {
@@ -70,13 +71,17 @@ bot.on('message', async (ctx: MyContext) => {
       if (wordsPair) {
         const [, word, translation] = wordsPair
         // ctx.reply(`This is your words pair – "${word.trim()}" > "${translation.trim()}"`)
-        const response = await http.post('user/add-word', {
-          user: user,
-          wordsPair: {
-            word: word,
-            translation: translation,
+        const response = await http.post(
+          'user/add-word',
+          {
+            user: user,
+            wordsPair: {
+              word: word,
+              translation: translation,
+            },
           },
-        })
+          { headers: { Authorization: `Bearer ${ctx.jwtToken}` } },
+        )
         ctx.reply(response?.data)
       }
     } else {

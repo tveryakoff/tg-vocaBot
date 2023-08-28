@@ -15,7 +15,7 @@ export const isUserTokenValid = (jwtToken: string, user: User) => {
   }
 }
 
-export const getUserTgIdHashFromToken = (jwtToken: string) => {
+export const getUserTgIdFromToken = (jwtToken: string) => {
   try {
     const decoded = jsonwebtoken.verify(jwtToken, JWT_SECRET) as JwtPayload
     return decoded.tgId
