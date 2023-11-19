@@ -2,6 +2,8 @@ import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import connectMongoDb from './db'
 import router from './router'
+import { validateSignatureMiddleware } from './middlewares/validateSignature'
+import getUser from './middlewares/getUser'
 
 dotenv.config()
 
@@ -16,7 +18,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/api', router)
+app.use('/api', validateSignatureMiddleware, getUser, router)
 
 connectMongoDb()
   .then(() => {

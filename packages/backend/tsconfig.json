@@ -1,4 +1,7 @@
 {
+  "ts-node": {
+    "files": true
+  },
   "compilerOptions": {
     "outDir": "dist",
     "target": "es2017",
@@ -9,7 +12,8 @@
     "strict": true,
     "skipLibCheck": true,
     "strictFunctionTypes": false,
-    "typeRoots": ["./types"],
+    "typeRoots": ["src/types/index.d.ts"],
+    "types": [ "node" ]
   },
   "include": [
     "src/**/*.ts"

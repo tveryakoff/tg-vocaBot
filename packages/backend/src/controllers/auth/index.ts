@@ -1,33 +1,28 @@
 import express from 'express'
 import UserModel from '../../models/user'
-import { generateAuthJwtToken } from '../../utils/auth'
-import User from "../../models/user";
+import User from '../../models/user'
 const router = express.Router()
 
 router.route('/tg').post(async (req, res) => {
-  const { user: reqUser, key } = req.body
-  if ((!reqUser && !key) || key !== process.env.API_KEY_BOT) {
-    return res.status(401).json({ message: 'No user' })
-  }
-
-  const user = await User.findOne({tgId: reqUser.id})
+  const { user: userString } = req.headers
+  const { id, userName, firstName, lastName, languageCode } = JSON.parse(userString as string)
+  const user = await User.findOne({ tgId: id }).populate('dictionaries')
   if (user) {
-    const jwtToken = generateAuthJwtToken(user, key)
-    return res.status(200).json({ user: user, jwtToken })
+    return res.status(200).json({ user, message: 'User already exists' })
   }
 
   if (!user) {
     try {
-      const newUser =  await new UserModel({
-        tgId: reqUser.id,
-        firstName: reqUser.first_name,
-        lastName: reqUser.last_name,
-        userName: reqUser.username,
+      const newUser = await new UserModel({
+        tgId: id,
+        firstName,
+        lastName,
+        userName,
+        languageCode,
       })
 
       await newUser.save()
-      const jwtToken = generateAuthJwtToken(newUser, key)
-      return res.status(200).json({ user: newUser, jwtToken })
+      return res.status(201).json({ user: newUser, message: 'New user has been created' })
     } catch (error) {
       console.log('error', error)
     }

@@ -4,7 +4,7 @@
   "description": "**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**",
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "nodemon --watch ./src/index.ts",
+    "dev": "nodemon --watch ./src",
     "lint:fix": "TIMING=1 eslint ./src/ --fix",
     "lint": "TIMING=1 eslint ./src/ --max-warnings 0"
   },

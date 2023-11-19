@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { dictionarySchema } from '../dictionary'
-import WordModel from '../word'
+import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
 
 const USER_MODEL_NAME = 'User'
 
@@ -19,22 +18,25 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    dictionary: {
-      type: dictionarySchema,
-      default: {
-        targetLanguage: 'en',
-        translationLanguage: 'ru',
-        words: [],
-      },
+    languageCode: {
+      type: String,
+      default: 'ru',
     },
+    dictionaries: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: DICTIONARY_MODEL_NAME,
+      },
+    ],
   },
   {
     methods: {
-      addWordToDictionary: async function (wordData) {
-        const word = new WordModel(wordData)
-        await word.save()
-        this.dictionary.words.push(word._id)
-        this.save()
+      createDictionary: async function (dictionaryInput) {
+        const dict = new Dictionary(dictionaryInput)
+        await dict.save()
+        this.dictionaries.push(dict._id)
+        await this.save()
+        return this
       },
     },
   },

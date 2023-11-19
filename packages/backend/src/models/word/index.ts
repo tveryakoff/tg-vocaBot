@@ -3,7 +3,7 @@ const { Schema } = mongoose
 
 export const WORD_MODEL_NAME = 'Word'
 
-const wordSchema = new Schema({
+export const wordSchema = new Schema({
   value: {
     type: String,
     required: true,
@@ -16,7 +16,3 @@ const wordSchema = new Schema({
     type: String,
   },
 })
-
-const WordModel = mongoose.model(WORD_MODEL_NAME, wordSchema)
-
-export default WordModel

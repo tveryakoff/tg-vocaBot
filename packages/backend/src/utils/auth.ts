@@ -1,25 +1,45 @@
-import { User } from '../types/user'
-import jsonwebtoken, {JwtPayload} from 'jsonwebtoken'
-import { JWT_SECRET } from '../constants/auth'
+// import { User } from '../types/user'
+//
+//
+// export const generateAuthJwtToken = (user: User, botApiKey: string) => {
+//   return jsonwebtoken.sign({ tgId: user.tgId, botApiKey }, JWT_SECRET, { expiresIn: '3h' })
+// }
+//
+// export const isUserTokenValid = (jwtToken: string, user: User) => {
+//   try {
+//     const decoded = jsonwebtoken.verify(jwtToken, JWT_SECRET) as JwtPayload
+//     return decoded.tgId === user.tgId && decoded.botApiKey === process.env.API_KEY_BOT
+//   } catch (error) {
+//     return false
+//   }
+// }
+//
+// export const getUserTgIdFromToken = (jwtToken: string) => {
+//   try {
+//     const decoded = jsonwebtoken.verify(jwtToken, JWT_SECRET) as JwtPayload
+//     return decoded.tgId
+//   } catch (error) {
+//     return null
+//   }
+// }
 
-export const generateAuthJwtToken = (user: User, botApiKey: string) => {
-  return jsonwebtoken.sign({ tgId: user.tgId, botApiKey }, JWT_SECRET, { expiresIn: '3h' })
-}
+import * as crypto from 'crypto'
+import { PUBLIC_KEY, SECRET } from '../test/auth'
 
-export const isUserTokenValid = (jwtToken: string, user: User) => {
+export const validateSignature = (signature: string) => {
   try {
-    const decoded = jsonwebtoken.verify(jwtToken, JWT_SECRET) as JwtPayload
-    return decoded.tgId === user.tgId && decoded.botApiKey === process.env.API_KEY_BOT
-  } catch (error) {
-    return false
-  }
-}
+    const isVerified = crypto.verify(
+      'sha256',
+      Buffer.from(SECRET, 'utf8'),
+      {
+        key: PUBLIC_KEY,
+        padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+      },
+      Buffer.from(signature, 'base64'),
+    )
 
-export const getUserTgIdFromToken = (jwtToken: string) => {
-  try {
-    const decoded = jsonwebtoken.verify(jwtToken, JWT_SECRET) as JwtPayload
-    return decoded.tgId
+    return isVerified
   } catch (error) {
-    return null
+    console.log('error while validating signature', error)
   }
 }

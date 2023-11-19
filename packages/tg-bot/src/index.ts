@@ -3,7 +3,7 @@ import type { Update, UserFromGetMe } from 'grammy/types'
 
 import dotenv from 'dotenv'
 import http from './http'
-import { NextFunction } from 'express'
+import { addUserHeader } from './http/addUserHeader'
 
 dotenv.config()
 
@@ -16,40 +16,20 @@ class MyContext extends Context {
   }
 }
 
-const bot = new Bot(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
+const bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
 
-bot.api.setMyCommands([
-  { command: 'start', description: 'Start the bot' },
-  { command: 'help', description: 'Show help text' },
-  { command: 'settings', description: 'Open settings' },
-])
+bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
 
-bot.command('start', async (ctx: MyContext) => {
+bot.command('start', async (ctx) => {
   try {
     const user = ctx.from
     if (!user) {
       throw new Error('No user')
     }
-    const response = await http.post('auth/tg', { user, key: process.env.API_KEY_BOT })
-    ctx.jwtToken = response?.data?.jwtToken
-    ctx.reply(`Hello ${response?.data?.user?.userName}!`)
-  } catch (e) {
-    console.log('error', e)
-  }
-})
-
-// Try to log a user in if ctx.jwtToken is missing
-bot.use(async (ctx: MyContext, next: NextFunction) => {
-  if (!ctx.jwtToken) {
-    const response = await http.post('auth/tg', { user: ctx.from, key: process.env.API_KEY_BOT })
-    ctx.jwtToken = response?.data?.jwtToken
-  }
-  return next()
-})
-
-bot.command('new_word', async (ctx: MyContext) => {
-  try {
-    ctx.reply(`Задайте слово для добавления в формате "слово - перевод"`)
+    addUserHeader(http, ctx.from)
+    const response = await http.post('auth/tg')
+    console.log(response.data)
+    ctx.reply(`Hello ${ctx?.from?.username}!`)
   } catch (e) {
     console.log('error', e)
   }
@@ -69,18 +49,13 @@ bot.on('message', async (ctx: MyContext) => {
       const wordsPair = pattern.exec(message)
       if (wordsPair) {
         const [, word, translation] = wordsPair
-        // ctx.reply(`This is your words pair – "${word.trim()}" > "${translation.trim()}"`)
-        const response = await http.post(
-          'user/add-word',
-          {
-            user: user,
-            wordsPair: {
-              word: word,
-              translation: translation,
-            },
+        const response = await http.post('user/add-word', {
+          user: user,
+          wordsPair: {
+            word: word,
+            translation: translation,
           },
-          { headers: { Authorization: `Bearer ${ctx.jwtToken}` } },
-        )
+        })
         ctx.reply(response?.data)
       }
     } else {
