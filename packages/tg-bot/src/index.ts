@@ -33,12 +33,11 @@ bot.command('start', async (ctx) => {
     if (!dictionaries?.length) {
       const createDictResult = await http.post('dictionary', { name: `My first dictionary` })
       return ctx.reply(
-        `Welcome ${ctx?.from?.username}! \n I've just created your first dictionary, go ahead and add some vocab in it!`,
+        `Welcome ${ctx?.from?.username}! \nI've just created your first dictionary, go ahead and add some vocab in it!`,
       )
       //TODO start add-word dialog
     }
-
-
+    return ctx.reply(`Welcome ${ctx?.from?.username}! \n\nWhat are you up today?`)
   } catch (e) {
     console.log('error', e)
   }
