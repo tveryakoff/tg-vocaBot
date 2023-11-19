@@ -28,8 +28,17 @@ bot.command('start', async (ctx) => {
     }
     addUserHeader(http, ctx.from)
     const response = await http.post('auth/tg')
-    console.log(response.data)
-    ctx.reply(`Hello ${ctx?.from?.username}!`)
+    const dictionaries = response?.data?.user?.dictionaries
+
+    if (!dictionaries?.length) {
+      const createDictResult = await http.post('dictionary', { name: `My first dictionary` })
+      return ctx.reply(
+        `Welcome ${ctx?.from?.username}! \n I've just created your first dictionary, go ahead and add some vocab in it!`,
+      )
+      //TODO start add-word dialog
+    }
+
+
   } catch (e) {
     console.log('error', e)
   }

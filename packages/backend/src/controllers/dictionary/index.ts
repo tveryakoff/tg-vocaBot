@@ -3,7 +3,7 @@ import express from 'express'
 const router = express.Router()
 
 router
-  .route('/dictionary')
+  .route('/')
   .post(async (req, res) => {
     const { user, body } = req
     if (!user) {
