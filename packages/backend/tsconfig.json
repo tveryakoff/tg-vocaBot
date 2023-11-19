@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "target": "es2017",
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true,
     "skipLibCheck": true,
     "strictFunctionTypes": false,
     "typeRoots": ["./types"],
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

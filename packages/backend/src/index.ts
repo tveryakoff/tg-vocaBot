@@ -18,8 +18,12 @@ app.use((req, res, next) => {
 
 app.use('/api', router)
 
-connectMongoDb().then(() => {
-  app.listen(3000, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:3000`)
+connectMongoDb()
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`⚡️[server]: Server is running at http://localhost:${process.env.PORT}`)
+    })
   })
-})
+  .catch(() => {
+    console.log('error')
+  })

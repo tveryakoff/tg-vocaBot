@@ -6,7 +6,6 @@
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true,
     "skipLibCheck": true,
     "strictFunctionTypes": false,
     "typeRoots": ["./types"],

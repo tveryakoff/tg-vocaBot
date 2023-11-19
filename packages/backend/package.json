@@ -4,9 +4,9 @@
   "description": "**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**",
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "nodemon ./src/index.ts",
-    "lint:fix": "TIMING=1 eslint .src/ --fix",
-    "lint": "TIMING=1 eslint .src/ --max-warnings 0"
+    "dev": "nodemon --watch ./src/index.ts",
+    "lint:fix": "TIMING=1 eslint ./src/ --fix",
+    "lint": "TIMING=1 eslint ./src/ --max-warnings 0"
   },
   "repository": {
     "type": "git",
@@ -25,11 +25,8 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.5.2",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
     "concurrently": "^8.2.1",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.2",
     "tsc-watch": "^6.0.4"
   }
 }
