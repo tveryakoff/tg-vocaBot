@@ -7,6 +7,7 @@ export type Word = {
 }
 
 export type Dictionary = {
+  _id: string
   name: string
   targetLanguage?: string
   translationLanguage?: string

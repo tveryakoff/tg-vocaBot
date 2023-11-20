@@ -15,4 +15,5 @@ export const wordSchema = new Schema({
   transcription: {
     type: String,
   },
+  lastTrained: Date,
 })

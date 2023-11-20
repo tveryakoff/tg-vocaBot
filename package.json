@@ -20,6 +20,7 @@
     "prettier": "^3.0.2"
   },
   "workspaces": [
-    "packages/*"
+    "packages/backend",
+    "packages/tg-bot"
   ]
 }
