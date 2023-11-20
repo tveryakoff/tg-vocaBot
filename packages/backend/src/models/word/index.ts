@@ -16,4 +16,11 @@ export const wordSchema = new Schema({
     type: String,
   },
   lastTrained: Date,
+
+  createdAt: Date,
+
+  mark: {
+    type: Number,
+    default: 0,
+  },
 })
