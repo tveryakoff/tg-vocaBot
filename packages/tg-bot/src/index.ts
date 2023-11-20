@@ -1,24 +1,40 @@
-import { Bot, Context, Api } from 'grammy'
+import { Bot, Context, Api, InlineKeyboard } from 'grammy'
 import type { Update, UserFromGetMe } from 'grammy/types'
+import { Menu } from '@grammyjs/menu'
 
 import dotenv from 'dotenv'
 import http from './http'
 import { addUserHeader } from './http/addUserHeader'
+import { Dictionary } from 'backend/src/types/user'
+import { addOrLearnMenu } from './menus/trainOrLearn'
+import { hasNoWords } from '../../utils /dictionary'
 
 dotenv.config()
 
 class MyContext extends Context {
-  public jwtToken: string | null
+  public tgId: number | null
 
   constructor(update: Update, api: Api, me: UserFromGetMe) {
     super(update, api, me)
-    this.jwtToken = null
+    this.tgId = null
   }
 }
+
+const dictSelectMenu = new Menu('dictSelect')
 
 const bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
 
 bot.api.setMyCommands([{ command: 'start', description: 'Start the bot' }])
+
+bot.use(addOrLearnMenu, dictSelectMenu)
+
+bot.on('message', async (ctx, next) => {
+  if (!ctx.tgId) {
+    ctx.tgId = ctx.from.id
+    addUserHeader(http, ctx.from)
+  }
+  return await next()
+})
 
 bot.command('start', async (ctx) => {
   try {
@@ -26,7 +42,6 @@ bot.command('start', async (ctx) => {
     if (!user) {
       throw new Error('No user')
     }
-    addUserHeader(http, ctx.from)
     const response = await http.post('auth/tg')
     const dictionaries = response?.data?.user?.dictionaries
 
@@ -34,10 +49,29 @@ bot.command('start', async (ctx) => {
       const createDictResult = await http.post('dictionary', { name: `My first dictionary` })
       return ctx.reply(
         `Welcome ${ctx?.from?.username}! \nI've just created your first dictionary, go ahead and add some vocab in it!`,
+        //TODO start add-word dialog
       )
-      //TODO start add-word dialog
     }
-    return ctx.reply(`Welcome ${ctx?.from?.username}! \n\nWhat are you up today?`)
+
+    const noWords = hasNoWords(dictionaries)
+
+    if (dictionaries.length === 1) {
+      return await ctx.reply(`Welcome ${ctx?.from?.username}! \n\nWhat are you up today?`, {
+        reply_markup: addOrLearnMenu,
+      })
+    } else if (dictionaries.length === 1) {
+      dictSelectMenu.row().dynamic((ctx, range) => {
+        for (const dict of dictionaries) {
+          range // no need for `new MenuRange()` or a `return`
+            .text(dict.name, (ctx) => ctx.reply(dict?._id))
+            .row()
+        }
+      })
+
+      return await ctx.reply('Choose a dictionary to work with!', {
+        reply_markup: dictSelectMenu,
+      })
+    }
   } catch (e) {
     console.log('error', e)
   }

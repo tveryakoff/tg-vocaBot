@@ -9,6 +9,7 @@
   "author": "Tveriakov Dmitrii",
   "license": "ISC",
   "dependencies": {
+    "@grammyjs/menu": "^1.2.1",
     "@types/axios": "^0.14.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
