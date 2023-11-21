@@ -9,7 +9,9 @@
   "author": "Tveriakov Dmitrii",
   "license": "ISC",
   "dependencies": {
+    "@grammyjs/conversations": "^1.1.2",
     "@grammyjs/menu": "^1.2.1",
+    "@grammyjs/storage-mongodb": "^2.4.0",
     "@types/axios": "^0.14.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",

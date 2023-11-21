@@ -1,8 +1,8 @@
 import { userResolver } from '../../../../services/db/resolvers/user'
 import { Middleware } from 'grammy'
-import MyContext from '../context'
+import { MyContextType } from '../types/context'
 
-export const getUserData: Middleware<MyContext> = async (ctx, next) => {
+export const getUserData: Middleware<MyContextType> = async (ctx, next) => {
   if (!ctx) {
     return await next()
   }
