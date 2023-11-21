@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
 import { wordSchema } from '../word'
+import { Dictionary } from '../../../../types/user'
 const { Schema } = mongoose
 
 export const DICTIONARY_MODEL_NAME = 'Dictionary'
 
-export const dictionarySchema = new Schema(
+export const dictionarySchema = new Schema<Dictionary>(
   {
     name: { type: String, default: 'English words dictionary' },
     targetLanguage: { type: String, default: 'English' },

@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose'
 import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
+import { User, User as UserType, UserMethods } from '../../../../types/user'
 
 const USER_MODEL_NAME = 'User'
 
-const userSchema = new Schema(
+const userSchema = new Schema<User, unknown, UserMethods>(
   {
     userName: {
       type: String,
@@ -31,10 +32,10 @@ const userSchema = new Schema(
   },
   {
     methods: {
-      createDictionary: async function (dictionaryInput) {
+      createDictionary: async function (dictionaryInput): Promise<UserType> {
         const dict = new Dictionary(dictionaryInput)
         await dict.save()
-        this.dictionaries.push(dict._id)
+        this.dictionaries.push(dict.id)
         await this.save()
         return this
       },
