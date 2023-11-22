@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
-import { DictionaryMongooseHydrated, User, User as UserType, UserMethods } from '../../../../types/user'
+import { DictionaryMongooseHydrated, User, UserMethods } from '../../../../types/user'
 
 const USER_MODEL_NAME = 'User'
 
@@ -39,16 +39,19 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         await this.save()
         return dict
       },
-      addWordToDictionary: async function (wordData, dictId) {
-        const populatedUser = await this.populate({ path: 'dictionaries', match: { _id: { $eq: dictId } } })
-        console.log('dics', populatedUser.dictionaries)
-        //@ts-ignore
+      addWordToDictionary: async function ({ value, translation, transcription, mark, dictId }) {
+        const populatedUser = await this.populate<{ dictionaries: DictionaryMongooseHydrated[] }>({
+          path: 'dictionaries',
+          match: { _id: { $eq: dictId } },
+        })
         const dict = populatedUser.dictionaries[0]
-        //@ts-ignore
-        dict.words.push({ value: wordData.value, translation: wordData.translation })
-        //@ts-ignore
+        dict.words.push({ value: value, translation: translation, transcription, mark })
         await dict.save()
         await this.save()
+        return {
+          user: this,
+          dictionary: dict,
+        }
       },
     },
   },

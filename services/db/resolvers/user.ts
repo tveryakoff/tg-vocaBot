@@ -18,7 +18,7 @@ export const userResolver = {
     return User.findById(id)
   },
 
-  getByTgId: async function (tgId: number): Promise<UserMongooseHydrated | null> {
+  getByTgId: async function (tgId?: number): Promise<UserMongooseHydrated | null> {
     return User.findOne({ tgId })
   },
 }

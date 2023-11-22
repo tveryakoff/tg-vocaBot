@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument, Model, PopulatedDoc } from 'mongoose'
+import { HydratedDocument, PopulatedDoc } from 'mongoose'
 
 export type Word = {
   value: string
@@ -17,10 +17,6 @@ export type Dictionary = {
   words: Array<Word>
 }
 
-export type DictionaryMethods = {
-  addWordToDictionary: any
-}
-
 export type User = {
   tgId: string | number
   firstName?: string
@@ -30,9 +26,15 @@ export type User = {
   languageCode?: string
 }
 
+export type AddWordToDictInput = Word & {
+  dictId?: string | null
+}
+
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
-  addWordToDictionary: (wordInput: Word, dictId: string) => Promise<any>
+  addWordToDictionary: (
+    input: AddWordToDictInput,
+  ) => Promise<{ user: UserMongooseHydrated; dictionary: DictionaryMongooseHydrated }>
 }
 
 export type WordMongooseHydrated = HydratedDocument<Word>

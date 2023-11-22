@@ -8,7 +8,6 @@ export const getUserData: Middleware<MyContextType> = async (ctx, next) => {
   }
 
   if (!ctx?.user && ctx.from?.id) {
-    //@ts-ignore
     ctx.user = await userResolver.createIfNotExist({
       userName: ctx.from?.username,
       firstName: ctx.from?.first_name,
