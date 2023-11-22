@@ -38,6 +38,9 @@ async function bootstrap() {
         [AppState.TRAIN_WORDS]: {
           stage: null,
         },
+        [AppState.DEFAULT]: {
+          stage: null,
+        },
       }),
       //@ts-ignore
       storage: new MongoDBAdapter<SessionData>({ collection }),

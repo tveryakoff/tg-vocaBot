@@ -39,18 +39,36 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         await this.save()
         return dict
       },
-      addWordToDictionary: async function ({ value, translation, transcription, mark, dictId }) {
+      addWordToDictionary: async function ({
+        value: valueRaw,
+        translation: translationRaw,
+        transcription,
+        mark,
+        dictId,
+      }) {
         const populatedUser = await this.populate<{ dictionaries: DictionaryMongooseHydrated[] }>({
           path: 'dictionaries',
           match: { _id: { $eq: dictId } },
         })
+        const value = valueRaw.trim().toLowerCase()
+        const translation = translationRaw.trim().toLowerCase()
+
         const dict = populatedUser.dictionaries[0]
-        dict.words.push({ value: value, translation: translation, transcription, mark })
+        dict.words.push({
+          value,
+          translation,
+          transcription,
+          mark,
+        })
         await dict.save()
         await this.save()
         return {
           user: this,
           dictionary: dict,
+          justAdded: {
+            value,
+            translation,
+          },
         }
       },
     },

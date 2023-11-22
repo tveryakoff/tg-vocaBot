@@ -36,7 +36,7 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
     }
     const value = ctx.session.addWords.word
     //@ts-ignore
-    const { dictionary } = await ctx.user?.addWordToDictionary({
+    const { dictionary, justAdded } = await ctx.user?.addWordToDictionary({
       value,
       translation: translation || '',
       dictId: ctx?.session?.activeDictionaryId,
@@ -49,7 +49,7 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
     }
 
     return await ctx.reply(
-      `A new pair ${value} - ${translation} has been added to ${dictionary.name}!\n\nEnter a new word:`,
+      `A new pair ${justAdded.value} - ${justAdded.translation} has been added to ${dictionary.name}!\n\nEnter a new word:`,
     )
   }
 
