@@ -2,12 +2,12 @@ import { Context, NextFunction } from 'grammy'
 import { ConversationFlavor } from '@grammyjs/conversations'
 import { UserMongooseHydrated } from '../../../../types/user'
 import { MySession } from './session'
-import { DialogName } from './dialogs'
+import { AppState } from './dialogs'
 
 export type ExtendedContext = Context & {
   user: UserMongooseHydrated | null
   dialog: {
-    enter: (name: DialogName, next?: NextFunction) => any
+    enter: (name: AppState, next?: NextFunction) => any
   }
 }
 

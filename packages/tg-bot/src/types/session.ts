@@ -1,11 +1,18 @@
 import { SessionFlavor } from 'grammy'
-import { DialogName } from './dialogs'
+import { ADD_WORDS_STAGE, AppState } from './dialogs'
 
 export type SessionData = {
   activeDictionaryId?: string | null
-  state?: DialogName
-  addWords?: {
-    word: string
+  state?: AppState
+  [AppState.ADD_WORDS]: {
+    word?: string
+    stage: ADD_WORDS_STAGE | null
+  }
+  [AppState.TRAIN_WORDS]: {
+    stage: string | null
+  }
+  [AppState.DEFAULT]: {
+    stage: string | null
   }
 }
 

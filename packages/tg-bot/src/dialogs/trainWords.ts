@@ -1,18 +1,14 @@
 import { MyContextType } from '../types/context'
 import { Middleware } from 'grammy'
+import { AppState } from '../types/dialogs'
 
 const trainWords: Middleware<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state
-  if (!state || state !== 'trainWords') {
+  if (!state || state !== AppState.TRAIN_WORDS) {
     return await next()
   }
 
-  if (state === 'trainWords') {
-    if (!ctx?.message?.text) {
-      return await ctx.reply(`Word can't be empty!`)
-    }
-    return await ctx.reply(`Training words...`)
-  }
+  return await ctx.reply(`Training words...`)
 }
 
 export default trainWords

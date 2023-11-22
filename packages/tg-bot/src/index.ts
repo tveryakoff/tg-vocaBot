@@ -12,7 +12,7 @@ import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
 import { SessionData } from './types/session'
 import { addOrLearnMenu } from './menus/trainOrLearn'
 import dialogs, { dialogsApi } from './dialogs'
-import addWords from './dialogs/addWord'
+import { AppState } from './types/dialogs'
 
 dotenv.config()
 
@@ -32,6 +32,12 @@ async function bootstrap() {
     session({
       initial: () => ({
         activeDictionaryId: null,
+        [AppState.ADD_WORDS]: {
+          stage: null,
+        },
+        [AppState.TRAIN_WORDS]: {
+          stage: null,
+        },
       }),
       //@ts-ignore
       storage: new MongoDBAdapter<SessionData>({ collection }),
@@ -55,7 +61,7 @@ async function bootstrap() {
           `Welcome ${ctx?.from?.username}! \nI've just created your first dictionary, go ahead and add some vocab in it!`,
         )
         ctx.session.activeDictionaryId = dict.id.toString()
-        return ctx.dialog.enter('addWordEnter')
+        return ctx.dialog.enter(AppState.ADD_WORDS)
       }
       if (dictionaries.length === 1) {
         ctx.session.activeDictionaryId = dictionaries[0].toString()
@@ -79,8 +85,8 @@ async function bootstrap() {
     }
   })
 
-  bot.command('addwords', async (ctx) => ctx.dialog.enter('addWordEnter'))
-  bot.command('trainwords', async (ctx) => ctx.dialog.enter('trainWords'))
+  bot.command('addwords', async (ctx) => ctx.dialog.enter(AppState.ADD_WORDS))
+  bot.command('trainwords', async (ctx) => ctx.dialog.enter(AppState.TRAIN_WORDS))
 
   bot.on('msg:text', ...dialogs)
 
