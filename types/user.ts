@@ -32,10 +32,11 @@ export type AddWordToDictInput = Word & {
 
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
+  hasWordInDictionary: (dictId: string, word: string) => Promise<boolean>
   addWordToDictionary: (input: AddWordToDictInput) => Promise<{
     user: UserMongooseHydrated
     dictionary: DictionaryMongooseHydrated
-    justAdded: { value: string; translation: string }
+    justAdded: { value: string | null; translation: string | null}
   }>
 }
 

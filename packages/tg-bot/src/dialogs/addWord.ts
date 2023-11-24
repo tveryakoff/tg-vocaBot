@@ -17,9 +17,17 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
   }
 
   if (stage === ADD_WORDS_STAGE.WORD) {
-    if (!ctx?.message?.text) {
+    const word = ctx?.message?.text
+    if (!word) {
       return await ctx.reply(`Word can't be empty!`)
     }
+
+    if (await ctx.user?.hasWordInDictionary(ctx.session.activeDictionaryId || '', word)) {
+      return await ctx.reply(
+        `"${word.toLowerCase().trim()}" already exists in that dictionary, try to add another word:`,
+      )
+    }
+
     ctx.session.addWords = {
       stage: ADD_WORDS_STAGE.TRANSLATION,
       word: ctx.message?.text,

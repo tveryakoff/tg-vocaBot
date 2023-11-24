@@ -39,6 +39,25 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         await this.save()
         return dict
       },
+      hasWordInDictionary: async function (dictId, word) {
+        const populatedUser = await this.populate<{ dictionaries: DictionaryMongooseHydrated[] }>({
+          path: 'dictionaries',
+          match: { _id: { $eq: dictId } },
+        })
+
+        const dict = populatedUser.dictionaries?.[0]
+
+        if (!dict) {
+          throw new Error(`No dictionary with ${dictId} found`)
+        }
+        const value = word.trim().toLowerCase()
+
+        if (dict.words?.find((w) => w?.value === value)) {
+          return true
+        }
+
+        return false
+      },
       addWordToDictionary: async function ({
         value: valueRaw,
         translation: translationRaw,
@@ -50,10 +69,26 @@ const userSchema = new Schema<User, unknown, UserMethods>(
           path: 'dictionaries',
           match: { _id: { $eq: dictId } },
         })
+
+        const dict = populatedUser.dictionaries?.[0]
+
+        if (!dict) {
+          throw new Error(`No dictionary with ${dictId} found`)
+        }
+
         const value = valueRaw.trim().toLowerCase()
         const translation = translationRaw.trim().toLowerCase()
 
-        const dict = populatedUser.dictionaries[0]
+        if (dict.words?.find((w) => w?.value === value)) {
+          return {
+            user: this,
+            dictionary: dict,
+            justAdded: {
+              value,
+              translation,
+            },
+          }
+        }
         dict.words.push({
           value,
           translation,
