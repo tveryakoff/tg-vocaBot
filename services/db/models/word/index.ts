@@ -22,7 +22,7 @@ export const wordSchema = new Schema<Word>(
 
     mark: {
       type: Number,
-      default: 0,
+      default: 1,
     },
   },
   { timestamps: true },

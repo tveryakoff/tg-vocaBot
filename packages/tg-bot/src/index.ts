@@ -37,6 +37,7 @@ async function bootstrap() {
         },
         [AppState.TRAIN_WORDS]: {
           stage: null,
+          type: 'word',
         },
         [AppState.DEFAULT]: {
           stage: null,

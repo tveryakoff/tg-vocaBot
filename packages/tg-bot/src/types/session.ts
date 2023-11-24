@@ -1,5 +1,5 @@
 import { SessionFlavor } from 'grammy'
-import { ADD_WORDS_STAGE, AppState } from './dialogs'
+import { ADD_WORDS_STAGE, TRAIN_WORDS_STAGE, AppState } from './dialogs'
 
 export type SessionData = {
   activeDictionaryId?: string | null
@@ -9,7 +9,9 @@ export type SessionData = {
     stage: ADD_WORDS_STAGE | null
   }
   [AppState.TRAIN_WORDS]: {
-    stage: string | null
+    stage: TRAIN_WORDS_STAGE | null
+    type: 'word' | 'translation'
+    word?: string
   }
   [AppState.DEFAULT]: {
     stage: string | null

@@ -58,6 +58,20 @@ const userSchema = new Schema<User, unknown, UserMethods>(
 
         return false
       },
+      getWordForTraining: async function (dictId) {
+        const populatedUser = await this.populate<{ dictionaries: DictionaryMongooseHydrated[] }>({
+          path: 'dictionaries',
+          match: { _id: { $eq: dictId } },
+        })
+
+        const dict = populatedUser.dictionaries?.[0]
+
+        if (!dict) {
+          throw new Error(`No dictionary with ${dictId} found`)
+        }
+
+        return dict.getWordForTraining()
+      },
       addWordToDictionary: async function ({
         value: valueRaw,
         translation: translationRaw,
@@ -105,6 +119,13 @@ const userSchema = new Schema<User, unknown, UserMethods>(
             translation,
           },
         }
+      },
+      checkWord: async function (userInput) {
+        const dict: DictionaryMongooseHydrated = await Dictionary.findById(userInput.dictId)
+        if (!dict) {
+          throw new Error(`Dictionary with ${userInput.dictId} not found while checking a word`)
+        }
+        return dict.checkWord(userInput)
       },
     },
   },

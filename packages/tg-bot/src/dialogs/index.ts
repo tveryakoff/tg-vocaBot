@@ -17,6 +17,7 @@ export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
 
       if (!ctx.session?.[name] && name) {
         ctx.session[name] = {
+          //@ts-ignore
           stage: null,
         }
       } else {

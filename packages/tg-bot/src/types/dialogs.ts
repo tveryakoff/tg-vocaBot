@@ -9,3 +9,9 @@ export enum ADD_WORDS_STAGE {
   WORD = 'word',
   TRANSLATION = 'translation',
 }
+
+export enum TRAIN_WORDS_STAGE {
+  DEFAULT = 'default',
+  SELECT_TRAINING_TYPE = 'selectTrainingType',
+  CHECK_WORD = 'checkWord',
+}
