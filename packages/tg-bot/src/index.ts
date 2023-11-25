@@ -1,19 +1,17 @@
-import { Bot, session } from 'grammy'
+import { Bot } from 'grammy'
 import { Menu } from '@grammyjs/menu'
 
 import dotenv from 'dotenv'
-import { getUserData } from './auth/userData'
 import { dictionaryResolver } from '../../../services/db/resolvers/dictionary'
 import { Dictionary } from '../../../types/user'
 import connectMongoDb from '../../../services/db/connect'
-import { MyContextType } from './types/context'
-import mongoose from 'mongoose'
-import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
-import { SessionData } from './types/session'
+import mongoose, { Collection } from 'mongoose'
+import { ISession } from '@grammyjs/storage-mongodb'
 import { addOrLearnMenu } from './menus/AddOrLearn'
-import dialogs, { dialogsApi } from './dialogs'
-import { AppState } from './types/dialogs'
+import dialogs from './dialogs'
 import trainingTypeMenu from './menus/TrainingType'
+import { contextComposer, MyContextType } from './context'
+import { AppState } from './context/session'
 
 dotenv.config()
 
@@ -29,27 +27,7 @@ async function bootstrap() {
     { command: 'trainwords', description: 'Train words' },
   ])
 
-  bot.use(
-    session({
-      initial: () => ({
-        activeDictionaryId: null,
-        [AppState.ADD_WORDS]: {
-          stage: null,
-        },
-        [AppState.TRAIN_WORDS]: {
-          stage: null,
-          type: 'word',
-        },
-        [AppState.DEFAULT]: {
-          stage: null,
-        },
-      }),
-      //@ts-ignore
-      storage: new MongoDBAdapter<SessionData>({ collection }),
-    }),
-    getUserData,
-    dialogsApi,
-  )
+  bot.use(contextComposer(collection as Collection<ISession>))
 
   bot.use(addOrLearnMenu, dictSelectMenu, trainingTypeMenu)
 

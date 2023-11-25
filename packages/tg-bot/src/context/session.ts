@@ -1,5 +1,11 @@
 import { SessionFlavor } from 'grammy'
-import { ADD_WORDS_STAGE, TRAIN_WORDS_STAGE, AppState } from './dialogs'
+import { ADD_WORDS_STAGE, TRAIN_WORDS_STAGE } from '../dialogs/constants'
+
+export enum AppState {
+  DEFAULT = 'default',
+  ADD_WORDS = 'addWords',
+  TRAIN_WORDS = 'trainWords',
+}
 
 export type SessionData = {
   activeDictionaryId?: string | null

@@ -1,7 +1,8 @@
-import { MyContextType } from '../types/context'
 import { DictionaryMongooseHydrated } from '../../../../types/user'
 import { Middleware } from 'grammy'
-import { ADD_WORDS_STAGE, AppState } from '../types/dialogs'
+import { ADD_WORDS_STAGE } from './constants'
+import { MyContextType } from '../context'
+import { AppState } from '../context/session'
 
 const addWords: Middleware<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state
@@ -9,10 +10,10 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
     return await next()
   }
 
-  const stage = ctx?.session?.addWords?.stage
+  const stage = ctx?.session[AppState.ADD_WORDS]?.stage
 
   if (!stage || stage === ADD_WORDS_STAGE.DEFAULT) {
-    ctx.session.addWords.stage = ADD_WORDS_STAGE.WORD
+    ctx.session[AppState.ADD_WORDS].stage = ADD_WORDS_STAGE.WORD
     return await ctx.reply(`Type in a word which you'd like to add:`)
   }
 
@@ -28,7 +29,7 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
       )
     }
 
-    ctx.session.addWords = {
+    ctx.session[AppState.ADD_WORDS] = {
       stage: ADD_WORDS_STAGE.TRANSLATION,
       word: ctx.message?.text,
     }
@@ -39,10 +40,10 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
       return await ctx.reply(`Translation can't be empty!`)
     }
     ctx.user?.populate<{ dictionaries: DictionaryMongooseHydrated[] }>('dictionaries')
-    if (!ctx.session?.addWords?.word) {
+    if (!ctx.session[AppState.ADD_WORDS]?.word) {
       throw new Error('No word is set for the translation')
     }
-    const value = ctx.session.addWords.word
+    const value = ctx.session[AppState.ADD_WORDS].word
     //@ts-ignore
     const { dictionary, justAdded } = await ctx.user?.addWordToDictionary({
       value,
@@ -50,7 +51,7 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
       dictId: ctx?.session?.activeDictionaryId,
     })
 
-    ctx.session.addWords = {
+    ctx.session[AppState.ADD_WORDS] = {
       stage: ADD_WORDS_STAGE.WORD,
       //@ts-ignore
       word: null,

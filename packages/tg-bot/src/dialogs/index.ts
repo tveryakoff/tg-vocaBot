@@ -1,8 +1,8 @@
-import { MyContextType } from '../types/context'
 import { Middleware, MiddlewareFn } from 'grammy'
 import addWord from './addWord'
 import trainWords from './trainWords'
-import { AppState } from '../types/dialogs'
+import {  MyContextType } from '../context'
+import { AppState } from '../context/session'
 
 const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
   [AppState.ADD_WORDS]: addWord,

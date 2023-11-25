@@ -1,6 +1,6 @@
 import { Menu } from '@grammyjs/menu'
-import { MyContextType } from '../../types/context'
-import { AppState } from '../../types/dialogs'
+import {  MyContextType } from '../../context'
+import { AppState } from '../../context/session'
 
 const addOrLearnMenu = new Menu<MyContextType>('addOrLearn')
   .text('Add some vocab', async (ctx) => {
