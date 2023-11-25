@@ -31,6 +31,16 @@ export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
   return await next()
 }
 
-const dialogs: Middleware<MyContextType>[] = [addWord, trainWords]
+const dialogs: Middleware<MyContextType> = async (ctx, next) => {
+  const state = ctx.session.state
+
+  if (state !== AppState.ADD_WORDS && state !== AppState.TRAIN_WORDS) {
+    return await next()
+  }
+
+  const start = dialogsObj[state] as MiddlewareFn<MyContextType>
+
+  return start(ctx, next)
+}
 
 export default dialogs

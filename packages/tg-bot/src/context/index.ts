@@ -1,4 +1,4 @@
-import { Composer, Context, session } from 'grammy'
+import { Composer, Context, MiddlewareFn, session } from 'grammy'
 import { ConversationFlavor } from '@grammyjs/conversations'
 import { UserMongooseHydrated } from '../../../../types/user'
 import { AppState, MySession, SessionData } from './session'
@@ -7,6 +7,8 @@ import { dialogsApi } from '../dialogs'
 import { INITIAL_STATE } from './constants'
 import { Collection } from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
+import { INITIAL_DIALOG_STATE } from '../dialogs/constants'
+import { Command } from '../commands/constants'
 
 export type ExtendedContext = Context & {
   user: UserMongooseHydrated | null
@@ -19,6 +21,13 @@ export type MyContextType = ExtendedContext & ConversationFlavor & MySession
 
 const composer = new Composer()
 
+export const clearSessionData: MiddlewareFn<MyContextType> = async (ctx, next) => {
+  ctx.session = { ...ctx.session, ...INITIAL_DIALOG_STATE }
+  ctx.session.state = AppState.DEFAULT
+
+  return await next()
+}
+
 const contextComposer = (collection: Collection<ISession>) =>
   composer.use(
     session({
@@ -28,5 +37,4 @@ const contextComposer = (collection: Collection<ISession>) =>
     getUserData,
     dialogsApi,
   )
-
 export { contextComposer }

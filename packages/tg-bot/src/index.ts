@@ -10,8 +10,9 @@ import { ISession } from '@grammyjs/storage-mongodb'
 import { addOrLearnMenu } from './menus/AddOrLearn'
 import dialogs from './dialogs'
 import trainingTypeMenu from './menus/TrainingType'
-import { contextComposer, MyContextType } from './context'
+import { clearSessionData, contextComposer, MyContextType } from './context'
 import { AppState } from './context/session'
+import { Command } from './commands/constants'
 
 dotenv.config()
 
@@ -21,6 +22,7 @@ async function bootstrap() {
 
   const bot = new Bot<MyContextType>(`${process.env.API_KEY_BOT}`)
 
+  //@ts-ignore
   bot.use(contextComposer(collection as Collection<ISession>))
 
   bot.use(trainingTypeMenu, addOrLearnMenu, dictSelectMenu)
@@ -30,6 +32,8 @@ async function bootstrap() {
     { command: 'addwords', description: 'Add words' },
     { command: 'trainwords', description: 'Train words' },
   ])
+
+  bot.command([Command.START], clearSessionData)
 
   bot.command('start', async (ctx) => {
     if (!ctx.user) {
@@ -71,7 +75,7 @@ async function bootstrap() {
   bot.command('addwords', async (ctx) => ctx.dialog.enter(AppState.ADD_WORDS))
   bot.command('trainwords', async (ctx) => ctx.dialog.enter(AppState.TRAIN_WORDS))
 
-  bot.on('msg:text', ...dialogs)
+  bot.use(dialogs)
 
   return bot.start()
 }
