@@ -2,7 +2,8 @@ import { Middleware, MiddlewareFn } from 'grammy'
 import addWord from './addWord'
 import trainWords from './trainWords'
 import { MyContextType } from '../context'
-import { AppState } from '../context/session'
+import { AppState, DIALOG_STATE } from '../context/session'
+import { INITIAL_DIALOG_STATE } from './constants'
 
 const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
   [AppState.ADD_WORDS]: addWord,
@@ -12,16 +13,11 @@ const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
 
 export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
   ctx.dialog = {
-    enter: async (name: AppState, initialState: any) => {
+    enter: async <T extends AppState>(name: T, initialState: DIALOG_STATE[T]) => {
       ctx.session.state = name
 
-      if (!ctx.session?.[name] && name && !initialState) {
-        ctx.session[name] = {
-          //@ts-ignore
-          stage: null,
-        }
-      } else if (!initialState) {
-        ctx.session[name].stage = null
+      if (!initialState) {
+        ctx.session[name] = { ...INITIAL_DIALOG_STATE[name] }
       } else {
         ctx.session[name] = { ...initialState }
       }
