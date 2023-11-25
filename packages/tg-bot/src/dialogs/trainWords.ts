@@ -1,8 +1,8 @@
 import { MiddlewareFn } from 'grammy'
 import trainingTypeMenu from '../menus/TrainingType'
 import { MyContextType } from '../context'
-import { TRAIN_WORDS_STAGE } from './constants'
 import { AppState } from '../context/session'
+import { TRAIN_WORDS_STAGE } from './types'
 
 const trainWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state

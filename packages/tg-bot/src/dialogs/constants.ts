@@ -1,12 +1,17 @@
-export enum ADD_WORDS_STAGE {
-  DEFAULT = 'default',
-  WORD = 'word',
-  TRANSLATION = 'translation',
-}
+import { AppState, DIALOG_STATE } from '../context/session'
+import { ADD_WORDS_STAGE, TRAIN_WORDS_STAGE } from './types'
 
-export enum TRAIN_WORDS_STAGE {
-  DEFAULT = 'default',
-  GET_WORD = 'getWord',
-  SELECT_TRAINING_TYPE = 'selectTrainingType',
-  CHECK_WORD = 'checkWord',
+export const INITIAL_DIALOG_STATE: DIALOG_STATE = {
+  [AppState.ADD_WORDS]: {
+    stage: ADD_WORDS_STAGE.DEFAULT,
+    word: null,
+  },
+  [AppState.TRAIN_WORDS]: {
+    stage: TRAIN_WORDS_STAGE.DEFAULT,
+    word: null,
+    type: 'word',
+  },
+  [AppState.DEFAULT]: {
+    stage: null,
+  },
 }

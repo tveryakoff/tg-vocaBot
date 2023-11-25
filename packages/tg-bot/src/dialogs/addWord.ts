@@ -1,8 +1,8 @@
 import { DictionaryMongooseHydrated } from '../../../../types/user'
 import { Middleware } from 'grammy'
-import { ADD_WORDS_STAGE } from './constants'
 import { MyContextType } from '../context'
 import { AppState } from '../context/session'
+import { ADD_WORDS_STAGE } from './types'
 
 const addWords: Middleware<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state

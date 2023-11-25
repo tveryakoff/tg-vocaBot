@@ -1,7 +1,7 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContextType } from '../../context'
 import { AppState } from '../../context/session'
-import { TRAIN_WORDS_STAGE } from '../../dialogs/constants'
+import { TRAIN_WORDS_STAGE } from '../../dialogs/types'
 
 const trainingTypeMenu = new Menu<MyContextType>('trainingType')
   .text('Translation - Word', async (ctx) => {

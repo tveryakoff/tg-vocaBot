@@ -21,15 +21,15 @@ async function bootstrap() {
 
   const bot = new Bot<MyContextType>(`${process.env.API_KEY_BOT}`)
 
+  bot.use(contextComposer(collection as Collection<ISession>))
+
+  bot.use(trainingTypeMenu, addOrLearnMenu, dictSelectMenu)
+
   await bot.api.setMyCommands([
     { command: 'start', description: 'Start the bot' },
     { command: 'addwords', description: 'Add words' },
     { command: 'trainwords', description: 'Train words' },
   ])
-
-  bot.use(contextComposer(collection as Collection<ISession>))
-
-  bot.use(addOrLearnMenu, dictSelectMenu, trainingTypeMenu)
 
   bot.command('start', async (ctx) => {
     if (!ctx.user) {

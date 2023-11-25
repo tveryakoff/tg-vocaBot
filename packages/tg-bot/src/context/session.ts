@@ -1,5 +1,11 @@
 import { SessionFlavor } from 'grammy'
-import { ADD_WORDS_STAGE, TRAIN_WORDS_STAGE } from '../dialogs/constants'
+import { ADD_WORDS_STATE, DEFAULT_STATE, TRAIN_WORDS_STATE } from '../dialogs/types'
+
+export type DIALOG_STATE = {
+  [AppState.DEFAULT]: DEFAULT_STATE
+  [AppState.ADD_WORDS]: ADD_WORDS_STATE
+  [AppState.TRAIN_WORDS]: TRAIN_WORDS_STATE
+}
 
 export enum AppState {
   DEFAULT = 'default',
@@ -7,21 +13,9 @@ export enum AppState {
   TRAIN_WORDS = 'trainWords',
 }
 
-export type SessionData = {
+export type SessionData = DIALOG_STATE & {
   activeDictionaryId?: string | null
   state?: AppState
-  [AppState.ADD_WORDS]: {
-    word?: string
-    stage: ADD_WORDS_STAGE | null
-  }
-  [AppState.TRAIN_WORDS]: {
-    stage: TRAIN_WORDS_STAGE | null
-    type: 'word' | 'translation'
-    word?: string
-  }
-  [AppState.DEFAULT]: {
-    stage: string | null
-  }
 }
 
 export type MySession = SessionFlavor<SessionData>
