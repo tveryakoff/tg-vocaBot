@@ -12,6 +12,7 @@ export enum ADD_WORDS_STAGE {
 
 export enum TRAIN_WORDS_STAGE {
   DEFAULT = 'default',
+  GET_WORD = 'getWord',
   SELECT_TRAINING_TYPE = 'selectTrainingType',
   CHECK_WORD = 'checkWord',
 }

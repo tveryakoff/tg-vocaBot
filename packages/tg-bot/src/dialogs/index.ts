@@ -12,16 +12,18 @@ const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
 
 export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
   ctx.dialog = {
-    enter: async (name: AppState) => {
+    enter: async (name: AppState, initialState: any) => {
       ctx.session.state = name
 
-      if (!ctx.session?.[name] && name) {
+      if (!ctx.session?.[name] && name && !initialState) {
         ctx.session[name] = {
           //@ts-ignore
           stage: null,
         }
-      } else {
+      } else if (!initialState) {
         ctx.session[name].stage = null
+      } else {
+        ctx.session[name] = initialState
       }
 
       const start = dialogsObj[name] as MiddlewareFn<MyContextType>

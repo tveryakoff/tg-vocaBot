@@ -10,9 +10,10 @@ import { MyContextType } from './types/context'
 import mongoose from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
 import { SessionData } from './types/session'
-import { addOrLearnMenu } from './menus/trainOrLearn'
+import { addOrLearnMenu } from './menus/AddOrLearn'
 import dialogs, { dialogsApi } from './dialogs'
 import { AppState } from './types/dialogs'
+import trainingTypeMenu from './menus/TrainingType'
 
 dotenv.config()
 
@@ -50,7 +51,7 @@ async function bootstrap() {
     dialogsApi,
   )
 
-  bot.use(addOrLearnMenu, dictSelectMenu)
+  bot.use(addOrLearnMenu, dictSelectMenu, trainingTypeMenu)
 
   bot.command('start', async (ctx) => {
     if (!ctx.user) {

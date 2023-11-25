@@ -1,6 +1,7 @@
 import { MyContextType } from '../types/context'
 import { MiddlewareFn } from 'grammy'
 import { AppState, TRAIN_WORDS_STAGE } from '../types/dialogs'
+import trainingTypeMenu from '../menus/TrainingType'
 
 const trainWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state
@@ -12,6 +13,13 @@ const trainWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
   const dictId = ctx?.session?.activeDictionaryId
 
   if (!stage || stage === TRAIN_WORDS_STAGE.DEFAULT) {
+    ctx.session[AppState.TRAIN_WORDS].stage = TRAIN_WORDS_STAGE.GET_WORD
+    return await ctx.reply(`Please choose the way you want to learn new words:`, {
+      reply_markup: trainingTypeMenu,
+    })
+  }
+
+  if (stage === TRAIN_WORDS_STAGE.GET_WORD) {
     const word = await ctx?.user?.getWordForTraining?.(dictId)
 
     ctx.session[AppState.TRAIN_WORDS] = {
@@ -37,7 +45,7 @@ const trainWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
 
     ctx.session[AppState.TRAIN_WORDS] = {
       ...ctx.session[AppState.TRAIN_WORDS],
-      stage: TRAIN_WORDS_STAGE.DEFAULT,
+      stage: TRAIN_WORDS_STAGE.GET_WORD,
       word: null,
     }
 
