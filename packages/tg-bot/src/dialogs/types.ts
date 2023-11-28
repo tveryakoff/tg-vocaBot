@@ -36,4 +36,5 @@ export type EDIT_WORDS_STATE = {
   stage: EDIT_WORDS_STAGE
   word?: string
   page?: number
+  total?: number
 }

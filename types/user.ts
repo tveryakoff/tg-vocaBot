@@ -54,7 +54,7 @@ export type UserMethods = {
   }>
   getWordForTraining: (dictId?: string) => Promise<Word>
   checkWord: (input: CheckWordInput) => Promise<CheckWordResponse>
-  getDictWords: (input: GetDictWordsInput) => Promise<any>
+  getDictWords: (input: GetDictWordsInput) => Promise<{ words: Word[]; total: number }>
   deleteWord: (dictId: string, wordValue: string) => Promise<boolean>
 }
 

@@ -135,10 +135,10 @@ const userSchema = new Schema<User, unknown, UserMethods>(
           throw new Error(`Dictionary with ${dictId} not found while checking a word`)
         }
         if (!dict?.words?.length) {
-          return []
+          return { words: [], total: 0 }
         }
         const end = (page + 1) * perPage <= dict.words.length ? (page + 1) * perPage : dict.words.length
-        return dict.words.slice(page * perPage, end)
+        return { words: dict.words.slice(page * perPage, end), total: Math.ceil(dict.words.length / perPage) || 0 }
       },
       deleteWord: async function (dictId, wordValue) {
         const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
