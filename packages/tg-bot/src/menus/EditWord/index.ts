@@ -11,7 +11,11 @@ editWordMenuType.dynamic(async (ctx, range) => {
       .text(`${word.value} - ${word.translation}`, (ctx) => {
         console.log(word.value)
       })
-      .text('❌', (ctx) => `delete ${word.value}`)
+      .text('❌', async (ctx,next) => {
+        await ctx.user.deleteWord(ctx.session.activeDictionaryId, word.value)
+        await ctx.reply(`Word pair "${word.value}" - "${word.translation}" has been deleted!`)
+        return await next()
+      })
     range.row()
   }
 

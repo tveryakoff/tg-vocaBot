@@ -140,6 +140,18 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         const end = (page + 1) * perPage <= dict.words.length ? (page + 1) * perPage : dict.words.length
         return dict.words.slice(page * perPage, end)
       },
+      deleteWord: async function (dictId, wordValue) {
+        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
+        if (!dict) {
+          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
+        }
+        if (!dict?.words?.length) {
+          return false
+        }
+        dict.words = dict.words.filter((w) => w.value !== wordValue)
+        await dict.save()
+        return true
+      },
     },
   },
 )

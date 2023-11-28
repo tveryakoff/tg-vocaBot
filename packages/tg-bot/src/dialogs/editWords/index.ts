@@ -1,8 +1,8 @@
+import { MyContextType } from '../../context'
+import { AppState } from '../../context/session'
 import { MiddlewareFn } from 'grammy'
-import { MyContextType } from '../context'
-import { AppState } from '../context/session'
-import { EDIT_WORDS_STAGE } from './types'
-import editWordMenuType from '../menus/EditWord'
+import { EDIT_WORDS_STAGE } from '../types'
+import editWordMenuType from '../../menus/EditWord'
 
 const editWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
   if (ctx.session.state !== AppState.EDIT_WORDS) {

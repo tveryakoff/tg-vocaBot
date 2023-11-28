@@ -36,7 +36,7 @@ export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
 const dialogs: Middleware<MyContextType> = async (ctx, next) => {
   const state = ctx.session.state
 
-  if (state !== AppState.ADD_WORDS && state !== AppState.TRAIN_WORDS) {
+  if (state !== AppState.ADD_WORDS && state !== AppState.TRAIN_WORDS && state !== AppState.EDIT_WORDS) {
     return await next()
   }
 
