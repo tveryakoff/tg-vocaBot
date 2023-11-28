@@ -17,13 +17,15 @@
     "nx-cloud": "latest",
     "prettier": "^3.0.2",
     "ts-node": "^10.9.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "dotenv": "^16.3.1"
   },
   "workspaces": [
     "packages/backend",
     "packages/tg-bot"
   ],
   "dependencies": {
+    "dotenv": "^16.3.1",
     "mongoose": "^8.0.1"
   }
 }

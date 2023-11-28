@@ -22,7 +22,6 @@ async function bootstrap() {
 
   const bot = new Bot<MyContextType>(`${process.env.API_KEY_BOT}`)
 
-  //@ts-ignore
   bot.use(contextComposer(collection as Collection<ISession>))
 
   bot.use(trainingTypeMenu, addOrLearnMenu, dictSelectMenu)

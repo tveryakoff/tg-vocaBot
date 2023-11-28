@@ -8,7 +8,6 @@ import { INITIAL_STATE } from './constants'
 import { Collection } from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
 import { INITIAL_DIALOG_STATE } from '../dialogs/constants'
-import { Command } from '../commands/constants'
 
 export type ExtendedContext = Context & {
   user: UserMongooseHydrated | null
