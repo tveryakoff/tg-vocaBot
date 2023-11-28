@@ -39,7 +39,7 @@ const addWords: Middleware<MyContextType> = async (ctx, next) => {
     if (!translation) {
       return await ctx.reply(`Translation can't be empty!`)
     }
-    ctx.user?.populate<{ dictionaries: DictionaryMongooseHydrated[] }>('dictionaries')
+    await ctx.user?.populate<{ dictionaries: DictionaryMongooseHydrated[] }>('dictionaries')
     if (!ctx.session[AppState.ADD_WORDS]?.word) {
       throw new Error('No word is set for the translation')
     }

@@ -1,3 +1,5 @@
+import { Word } from '../../../../types/user'
+
 export type DEFAULT_STATE = {
   stage?: string
 }
@@ -29,12 +31,15 @@ export type TRAIN_WORDS_STATE = {
 export enum EDIT_WORDS_STAGE {
   DEFAULT = 'default',
   CHOOSE_WORD = 'chooseWord',
-  WORD_EDIT = 'wordEdit',
+  WORD_EDIT_START = 'wordEditStart',
+  WORD_EDIT_END = 'wordEditEnd',
+  TRANSLATION_EDIT_START = 'translationEditStart',
+  TRANSLATION_EDIT_END = 'translationEditEnd',
 }
 
 export type EDIT_WORDS_STATE = {
   stage: EDIT_WORDS_STAGE
-  word?: string
+  word?: Word
   page?: number
   total?: number
 }

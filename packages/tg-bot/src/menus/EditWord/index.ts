@@ -2,6 +2,7 @@ import { Menu } from '@grammyjs/menu'
 import { MyContextType } from '../../context'
 import { AppState } from '../../context/session'
 import { deleteWord } from '../../dialogs/editWords/deleteWord'
+import { goToEditWordTranslation, goToEditWordValue } from '../../dialogs/editWords/goToEditWordValue'
 
 const editWordMenuType = new Menu<MyContextType>('editWordMenu')
 editWordMenuType.dynamic(async (ctx, range) => {
@@ -9,8 +10,9 @@ editWordMenuType.dynamic(async (ctx, range) => {
   const { words, total } = await ctx.user.getDictWords({ page, dictId: ctx.session.activeDictionaryId })
   for (const word of words) {
     range
-      .text(`${word.value} - ${word.translation}`, (ctx) => {
-        console.log(word.value)
+      .text(`${word.value} - ${word.translation}`, async (ctx) => {
+        ctx.session[AppState.EDIT_WORDS].word = word
+        return ctx.menu.nav('editSelect')
       })
       .text('❌', async (ctx, next) => {
         await deleteWord(ctx, word)
@@ -34,4 +36,17 @@ editWordMenuType.dynamic(async (ctx, range) => {
     return await ctx.reply(`It's already the last page!`)
   })
 })
+
+const editSelect = new Menu<MyContextType>('editSelect')
+
+editSelect.dynamic(async (ctx, range) => {
+  range
+    .text(`${ctx.session[AppState.EDIT_WORDS].word.value}`, goToEditWordValue)
+    .text(`${ctx.session[AppState.EDIT_WORDS].word.translation}`, goToEditWordTranslation)
+    .row()
+    .back('Go back')
+})
+
+editWordMenuType.register(editSelect)
+
 export default editWordMenuType
