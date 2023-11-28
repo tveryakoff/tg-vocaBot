@@ -127,6 +127,19 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         }
         return dict.checkWord(userInput)
       },
+      getDictWords: async function (userInput) {
+        const perPage = 5
+        const { page, dictId } = userInput
+        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
+        if (!dict) {
+          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
+        }
+        if (!dict?.words?.length) {
+          return []
+        }
+        const end = (page + 1) * perPage <= dict.words.length ? (page + 1) * perPage : dict.words.length
+        return dict.words.slice(page * perPage, end)
+      },
     },
   },
 )

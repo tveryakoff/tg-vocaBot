@@ -13,23 +13,27 @@ import trainingTypeMenu from './menus/TrainingType'
 import { clearSessionData, contextComposer, MyContextType } from './context'
 import { AppState } from './context/session'
 import { Command } from './commands/constants'
+import editWordMenuType from './menus/EditWord'
 
 dotenv.config()
 
 async function bootstrap() {
   const collection = mongoose.connection.db.collection<ISession>('sessions')
+
+  //TODO move to menu's folder
   const dictSelectMenu = new Menu('dictSelect')
 
   const bot = new Bot<MyContextType>(`${process.env.API_KEY_BOT}`)
 
   bot.use(contextComposer(collection as Collection<ISession>))
 
-  bot.use(trainingTypeMenu, addOrLearnMenu, dictSelectMenu)
+  bot.use(trainingTypeMenu, addOrLearnMenu, dictSelectMenu, editWordMenuType)
 
   await bot.api.setMyCommands([
     { command: 'start', description: 'Start the bot' },
     { command: 'addwords', description: 'Add words' },
     { command: 'trainwords', description: 'Train words' },
+    { command: 'editwords', description: 'Edit words' },
   ])
 
   bot.command([Command.START], clearSessionData)
@@ -73,6 +77,7 @@ async function bootstrap() {
 
   bot.command('addwords', async (ctx) => ctx.dialog.enter(AppState.ADD_WORDS))
   bot.command('trainwords', async (ctx) => ctx.dialog.enter(AppState.TRAIN_WORDS))
+  bot.command('editwords', async (ctx) => ctx.dialog.enter(AppState.EDIT_WORDS))
 
   bot.use(dialogs)
 

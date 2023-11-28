@@ -4,10 +4,12 @@ import trainWords from './trainWords'
 import { MyContextType } from '../context'
 import { AppState, DIALOG_STATE } from '../context/session'
 import { INITIAL_DIALOG_STATE } from './constants'
+import editWords from './editWords'
 
 const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
   [AppState.ADD_WORDS]: addWord,
   [AppState.TRAIN_WORDS]: trainWords,
+  [AppState.EDIT_WORDS]: editWords,
   [AppState.DEFAULT]: () => null,
 }
 

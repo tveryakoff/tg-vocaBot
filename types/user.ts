@@ -37,6 +37,11 @@ export type CheckWordInput = {
   type: 'word' | 'translation'
 }
 
+export type GetDictWordsInput = {
+  dictId: string
+  page: number
+}
+
 export type CheckWordResponse = { isCorrect: boolean; correctAnswer: string }
 
 export type UserMethods = {
@@ -49,6 +54,7 @@ export type UserMethods = {
   }>
   getWordForTraining: (dictId?: string) => Promise<Word>
   checkWord: (input: CheckWordInput) => Promise<CheckWordResponse>
+  getDictWords: (input: GetDictWordsInput) => Promise<any>
 }
 
 export type DictionaryMethods = {

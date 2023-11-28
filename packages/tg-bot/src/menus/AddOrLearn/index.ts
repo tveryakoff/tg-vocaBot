@@ -1,5 +1,5 @@
 import { Menu } from '@grammyjs/menu'
-import {  MyContextType } from '../../context'
+import { MyContextType } from '../../context'
 import { AppState } from '../../context/session'
 
 const addOrLearnMenu = new Menu<MyContextType>('addOrLearn')
