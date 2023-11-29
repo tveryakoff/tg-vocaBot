@@ -21,20 +21,22 @@ editWordMenuType.dynamic(async (ctx, range) => {
     range.row()
   }
 
-  range.text('<', async (ctx, next) => {
-    if (page > 0) {
-      ctx.session[AppState.EDIT_WORDS].page--
-      return await next()
-    }
-    return await ctx.reply(`It's already the first page!`)
-  })
-  range.text('>', async (ctx, next) => {
-    if (page + 1 < total) {
-      ctx.session[AppState.EDIT_WORDS].page++
-      return await next()
-    }
-    return await ctx.reply(`It's already the last page!`)
-  })
+  if (total > 1) {
+    range.text('<', async (ctx, next) => {
+      if (page > 0) {
+        ctx.session[AppState.EDIT_WORDS].page--
+        return await next()
+      }
+      return await ctx.reply(`It's already the first page!`)
+    })
+    range.text('>', async (ctx, next) => {
+      if (page + 1 < total) {
+        ctx.session[AppState.EDIT_WORDS].page++
+        return await next()
+      }
+      return await ctx.reply(`It's already the last page!`)
+    })
+  }
 })
 
 const editSelect = new Menu<MyContextType>('editSelect')
