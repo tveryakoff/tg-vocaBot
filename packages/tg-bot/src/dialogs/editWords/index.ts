@@ -38,7 +38,20 @@ const editWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
       })
     }
 
-    return
+    const word = await ctx.user.editWord({
+      dictId: ctx.session.activeDictionaryId,
+      _id: ctx.session[AppState.EDIT_WORDS].word._id,
+      value: wordValueInput,
+    })
+
+    await ctx.reply(
+      `Pair "${ctx.session[AppState.EDIT_WORDS].word.value}" - "${
+        ctx.session[AppState.EDIT_WORDS].word.translation
+      }" \n\nHas been replaced with:\n\n"${word.value}" - "${word.translation}"
+      `,
+    )
+
+    return ctx.dialog.enter(AppState.EDIT_WORDS, { ...INITIAL_DIALOG_STATE[AppState.EDIT_WORDS] })
   }
 
   if (stage === EDIT_WORDS_STAGE.TRANSLATION_EDIT_START) {
@@ -56,8 +69,20 @@ const editWords: MiddlewareFn<MyContextType> = async (ctx, next) => {
       })
     }
 
-    console.log(wordTranslationInput)
-    return
+    const word = await ctx.user.editWord({
+      dictId: ctx.session.activeDictionaryId,
+      _id: ctx.session[AppState.EDIT_WORDS].word._id,
+      translation: wordTranslationInput,
+    })
+
+    await ctx.reply(
+      `Pair "${ctx.session[AppState.EDIT_WORDS].word.value}" - ${ctx.session[AppState.EDIT_WORDS].word.translation} \n\n
+      Has been replaced with:\n\n
+      "${word.value}" - "${word.translation}"
+      `,
+    )
+
+    return ctx.dialog.enter(AppState.EDIT_WORDS, { ...INITIAL_DIALOG_STATE[AppState.EDIT_WORDS] })
   }
 }
 

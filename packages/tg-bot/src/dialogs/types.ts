@@ -1,4 +1,4 @@
-import { Word } from '../../../../types/user'
+import { Word, WordMongooseHydrated } from '../../../../types/user'
 
 export type DEFAULT_STATE = {
   stage?: string
@@ -39,7 +39,7 @@ export enum EDIT_WORDS_STAGE {
 
 export type EDIT_WORDS_STATE = {
   stage: EDIT_WORDS_STAGE
-  word?: Word
+  word?: WordMongooseHydrated
   page?: number
   total?: number
 }

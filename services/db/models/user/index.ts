@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
-import { DictionaryMongooseHydrated, User, UserMethods } from '../../../../types/user'
+import { DictionaryMongooseHydrated, User, UserMethods, WordMongooseHydrated } from '../../../../types/user'
 
 const USER_MODEL_NAME = 'User'
 
@@ -138,7 +138,10 @@ const userSchema = new Schema<User, unknown, UserMethods>(
           return { words: [], total: 0 }
         }
         const end = (page + 1) * perPage <= dict.words.length ? (page + 1) * perPage : dict.words.length
-        return { words: dict.words.slice(page * perPage, end), total: Math.ceil(dict.words.length / perPage) || 0 }
+        return {
+          words: dict.words.slice(page * perPage, end) as WordMongooseHydrated[],
+          total: Math.ceil(dict.words.length / perPage) || 0,
+        }
       },
       deleteWord: async function (dictId, wordValue) {
         const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
@@ -151,6 +154,14 @@ const userSchema = new Schema<User, unknown, UserMethods>(
         dict.words = dict.words.filter((w) => w.value !== wordValue)
         await dict.save()
         return true
+      },
+      editWord: async function (editWordInput) {
+        const { dictId } = editWordInput
+        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
+        if (!dict) {
+          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
+        }
+        return dict.editWord(editWordInput)
       },
     },
   },

@@ -1,4 +1,5 @@
 import { HydratedDocument, PopulatedDoc } from 'mongoose'
+import { W } from 'mongodb'
 
 export type Word = {
   value: string
@@ -44,6 +45,8 @@ export type GetDictWordsInput = {
 
 export type CheckWordResponse = { isCorrect: boolean; correctAnswer: string }
 
+export type EditWordInput = Partial<WordMongooseHydrated> & { dictId: string }
+
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
   hasWordInDictionary: (dictId: string, word: string) => Promise<boolean>
@@ -54,15 +57,17 @@ export type UserMethods = {
   }>
   getWordForTraining: (dictId?: string) => Promise<Word>
   checkWord: (input: CheckWordInput) => Promise<CheckWordResponse>
-  getDictWords: (input: GetDictWordsInput) => Promise<{ words: Word[]; total: number }>
+  getDictWords: (input: GetDictWordsInput) => Promise<{ words: WordMongooseHydrated[]; total: number }>
   deleteWord: (dictId: string, wordValue: string) => Promise<boolean>
+  editWord: (input: EditWordInput) => Promise<Word>
 }
 
 export type DictionaryMethods = {
   getWordForTraining?: () => Promise<Word>
   checkWord?: (input: CheckWordInput) => Promise<CheckWordResponse>
+  editWord?: (input: EditWordInput) => Promise<Word>
 }
 
-export type WordMongooseHydrated = HydratedDocument<Word>
+export type WordMongooseHydrated = HydratedDocument<Word> & { _doc: Word }
 export type DictionaryMongooseHydrated = HydratedDocument<Dictionary, DictionaryMethods>
 export type UserMongooseHydrated = HydratedDocument<User, UserMethods>

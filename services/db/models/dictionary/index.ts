@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { wordSchema } from '../word'
-import { Dictionary } from '../../../../types/user'
+import { Dictionary, WordMongooseHydrated } from '../../../../types/user'
 import { transformWord } from '../../../../utils /dictionary'
 const { Schema } = mongoose
 
@@ -70,6 +70,23 @@ export const dictionarySchema = new Schema<Dictionary>(
           correctAnswer,
           isCorrect,
         }
+      },
+      editWord: async function (editWordInput) {
+        const wordIndex = this.words.findIndex(
+          (w: WordMongooseHydrated) => w._id.toString() === editWordInput._id.toString(),
+        )
+        if (wordIndex === -1) {
+          throw new Error(`Word ${editWordInput.value} not found`)
+        }
+
+        this.words[wordIndex] = {
+          ...(this.words as WordMongooseHydrated[])[wordIndex]._doc,
+          value: transformWord(editWordInput.value) || this.words[wordIndex].value,
+          translation: transformWord(editWordInput.translation) || this.words[wordIndex].translation,
+        }
+
+        await this.save()
+        return this.words[wordIndex]
       },
     },
   },

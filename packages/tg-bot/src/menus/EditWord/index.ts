@@ -2,7 +2,7 @@ import { Menu } from '@grammyjs/menu'
 import { MyContextType } from '../../context'
 import { AppState } from '../../context/session'
 import { deleteWord } from '../../dialogs/editWords/deleteWord'
-import { goToEditWordTranslation, goToEditWordValue } from '../../dialogs/editWords/goToEditWordValue'
+import { goToChooseWord, goToEditWordTranslation, goToEditWordValue } from '../../dialogs/editWords/goToEditWordValue'
 
 const editWordMenuType = new Menu<MyContextType>('editWordMenu')
 editWordMenuType.dynamic(async (ctx, range) => {
@@ -44,7 +44,7 @@ editSelect.dynamic(async (ctx, range) => {
     .text(`${ctx.session[AppState.EDIT_WORDS].word.value}`, goToEditWordValue)
     .text(`${ctx.session[AppState.EDIT_WORDS].word.translation}`, goToEditWordTranslation)
     .row()
-    .back('Go back')
+    .text('Go back', goToChooseWord)
 })
 
 editWordMenuType.register(editSelect)
