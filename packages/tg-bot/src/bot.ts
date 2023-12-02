@@ -7,6 +7,7 @@ import { addOrLearnMenu } from './menus/AddOrLearn'
 import { INITIAL_SESSION_STATE } from './context/session'
 import { SessionData } from './context/types'
 import studyTypeMenu from './menus/StudyTypeMenu'
+import editWordMenuType from './menus/EditWord'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -44,7 +45,7 @@ export class TgBot {
   }
 
   setMenus() {
-    this.bot.use(studyTypeMenu, addOrLearnMenu)
+    this.bot.use(studyTypeMenu, addOrLearnMenu, editWordMenuType)
   }
 
   async setCommands() {
@@ -58,6 +59,7 @@ export class TgBot {
     this.bot.command('start', async (ctx) => ctx.enterDialog('start'))
     this.bot.command('addwords', async (ctx) => ctx.enterDialog('addWords'))
     this.bot.command('studywords', async (ctx) => ctx.enterDialog('studyWords'))
+    this.bot.command('editwords', async (ctx) => ctx.enterDialog('editWords'))
   }
 
   setUserDialogs() {

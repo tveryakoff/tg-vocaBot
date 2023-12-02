@@ -24,6 +24,9 @@ export class Dialog<T extends DialogName = DialogName> {
   }
 
   async start(initialState?: DIALOG_STATE[T]): Promise<any> {
+    if (this.name !== this.ctx.session.activeDialogName) {
+      this.ctx.session.activeDialogName = this.name
+    }
     if (!initialState) {
       this.ctx.setDialogContext(this.name, { ...this.initialState })
     } else {

@@ -18,7 +18,7 @@ export class MyContext extends Context {
     super(update, api, me)
   }
 
-  getDialogContext(dialogName: DialogName) {
+  getDialogContext<T extends DialogName>(dialogName: T): DIALOG_STATE[T] {
     return this.session[dialogName]
   }
 
@@ -46,10 +46,6 @@ export class MyContext extends Context {
   }
 
   async enterDialog(dialogName: DialogName, initialState?: DIALOG_STATE[DialogName]) {
-    if (dialogName !== this.session.activeDialogName) {
-      this.session.activeDialogName = dialogName
-    }
-
     const dialog = createDialogInstance(dialogName, this)
 
     if (dialog) {
