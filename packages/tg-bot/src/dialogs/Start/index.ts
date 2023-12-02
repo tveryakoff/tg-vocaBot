@@ -3,6 +3,7 @@ import { addOrLearnMenu } from '../../menus/AddOrLearn'
 import { DictionaryMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
 import { DIALOG_STATE } from '../types'
+import { selectActiveDictionaryMenu } from '../../menus/SelectActiveDictionary'
 
 export class StartDialog extends Dialog {
   constructor(ctx: MyContext) {
@@ -33,17 +34,10 @@ export class StartDialog extends Dialog {
       return await this.ctx.reply(`Welcome ${this.ctx?.from?.username}! \n\nWhat are you up today?`, {
         reply_markup: addOrLearnMenu,
       })
+    } else if (dictionaries.length > 1) {
+      return await this.ctx.reply('Choose a dictionary to work with!', {
+        reply_markup: selectActiveDictionaryMenu,
+      })
     }
-    // } else if (dictionaries.length > 1) {
-    //   dictSelectMenu.row().dynamic((ctx, range) => {
-    //     for (const dict of dictionaries) {
-    //       range.text(dict?.name, (ctx) => ctx.reply(dict?._id || '')).row()
-    //     }
-    //   })
-    //
-    //   return await ctx.reply('Choose a dictionary to work with!', {
-    //     reply_markup: dictSelectMenu,
-    //   })
-    // }
   }
 }
