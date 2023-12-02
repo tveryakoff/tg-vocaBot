@@ -5,7 +5,7 @@ import { goToChooseWord, goToEditWordTranslation, goToEditWordValue, deleteWord 
 const editWordMenuType = new Menu<MyContext>('editWordMenu')
 editWordMenuType.dynamic(async (ctx, range) => {
   const { page, stage } = ctx.getDialogContext('editWords')
-  const { words, total } = await ctx.user.getDictWords({ page, dictId: ctx.session.activeDictionaryId })
+  const { words, total } = await ctx.activeDictionary.getWords({ page })
   for (const word of words) {
     range
       .text(`${word.value} - ${word.translation}`, async (ctx) => {

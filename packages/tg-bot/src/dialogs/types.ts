@@ -43,8 +43,8 @@ export enum EDIT_WORDS_STAGE {
 }
 
 export type EDIT_WORDS_STATE = {
-  stage: EDIT_WORDS_STAGE
   word?: WordMongooseHydrated
+  stage: EDIT_WORDS_STAGE
   page?: number
   total?: number
 }

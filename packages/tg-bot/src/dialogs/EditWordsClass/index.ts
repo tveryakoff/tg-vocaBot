@@ -41,13 +41,10 @@ export class EditWords extends Dialog<'editWords'> {
   async handleTextInput(): Promise<any> {
     const { stage, word, page } = this.contextState
 
-    const { activeDictionaryId } = this.ctx.session
-
     if (stage === EDIT_WORDS_STAGE.WORD_EDIT_END) {
       const wordValueInput = this.ctx.message.text
 
-      const editedWord = await this.ctx.user.editWord({
-        dictId: activeDictionaryId,
+      const editedWord = await this.ctx.activeDictionary.editWord({
         _id: word?._id,
         value: wordValueInput,
       })
@@ -63,8 +60,7 @@ export class EditWords extends Dialog<'editWords'> {
     if (stage === EDIT_WORDS_STAGE.TRANSLATION_EDIT_END) {
       const wordTranslationInput = this.ctx.message.text
 
-      const editedWord = await this.ctx.user.editWord({
-        dictId: activeDictionaryId,
+      const editedWord = await this.ctx.activeDictionary.editWord({
         _id: word._id,
         translation: wordTranslationInput,
       })

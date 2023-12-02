@@ -1,10 +1,10 @@
-import { Word } from '../../../../../types/user'
+import { WordMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
 import { MiddlewareFn } from 'grammy'
 import { EDIT_WORDS_STAGE } from '../../dialogs/types'
 
-export const deleteWord = async (ctx: MyContext, word: Word) => {
-  await ctx.user.deleteWord(ctx.session.activeDictionaryId, word.value)
+export const deleteWord = async (ctx: MyContext, word: WordMongooseHydrated) => {
+  await ctx.activeDictionary.deleteWord(word._id.toString())
   return await ctx.reply(`Word pair "${word.value}" - "${word.translation}" has been deleted!`)
 }
 

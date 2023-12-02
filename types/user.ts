@@ -47,19 +47,15 @@ export type CheckWordInput = {
 }
 
 export type GetDictWordsInput = {
-  dictId: string
   page: number
 }
 
 export type CheckWordResponse = { isCorrect: boolean; correctAnswer: string }
 
-export type EditWordInput = Partial<WordMongooseHydrated> & { dictId: string }
+export type EditWordInput = Partial<WordMongooseHydrated>
 
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
-  getDictWords: (input: GetDictWordsInput) => Promise<{ words: WordMongooseHydrated[]; total: number }>
-  deleteWord: (dictId: string, wordValue: string) => Promise<boolean>
-  editWord: (input: EditWordInput) => Promise<Word>
 }
 
 export type DictionaryMethods = {
@@ -71,6 +67,8 @@ export type DictionaryMethods = {
   getWordForTraining?: () => Promise<Word>
   checkWord?: (input: CheckWordInput) => Promise<CheckWordResponse>
   editWord?: (input: EditWordInput) => Promise<Word>
+  deleteWord?: (wordId: string) => Promise<DictionaryMongooseHydrated>
+  getWords?: (input: GetDictWordsInput) => Promise<{ words: WordMongooseHydrated[]; total: number }>
 }
 
 export type WordMongooseHydrated = HydratedDocument<Word> & { _doc: Word }

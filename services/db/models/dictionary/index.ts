@@ -20,6 +20,18 @@ export const dictionarySchema = new Schema<Dictionary & DictionaryMethods>(
   },
   {
     methods: {
+      getWords: async function (input) {
+        const { page } = input
+        const perPage = 5
+        if (!this.words.length) {
+          return { words: [], total: 0 }
+        }
+        const end = (page + 1) * perPage <= this.words.length ? (page + 1) * perPage : this.words.length
+        return {
+          words: this.words.slice(page * perPage, end) as WordMongooseHydrated[],
+          total: Math.ceil(this.words.length / perPage) || 0,
+        }
+      },
       hasWord: function (valueRaw, translationRaw) {
         const value = valueRaw?.trim()?.toLowerCase()
         const translation = translationRaw?.trim()?.toLowerCase()
@@ -126,6 +138,12 @@ export const dictionarySchema = new Schema<Dictionary & DictionaryMethods>(
 
         await this.save()
         return this.words[wordIndex]
+      },
+
+      deleteWord: async function (wordId: string) {
+        this.words = this.words.filter((w: WordMongooseHydrated) => w._id.toString() !== wordId)
+        await this.save()
+        return this
       },
     },
   },

@@ -4,7 +4,7 @@ import { DictionaryMongooseHydrated, User, UserMethods, UserModel, WordMongooseH
 
 const USER_MODEL_NAME = 'User'
 
-const userSchema = new Schema<User, UserModel, UserMethods>(
+const userSchema = new Schema<User & UserMethods, UserModel>(
   {
     userName: {
       type: String,
@@ -38,42 +38,6 @@ const userSchema = new Schema<User, UserModel, UserMethods>(
         this.dictionaries.push(dict.id)
         await this.save()
         return dict
-      },
-      getDictWords: async function (userInput) {
-        const perPage = 5
-        const { page, dictId } = userInput
-        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
-        if (!dict) {
-          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
-        }
-        if (!dict?.words?.length) {
-          return { words: [], total: 0 }
-        }
-        const end = (page + 1) * perPage <= dict.words.length ? (page + 1) * perPage : dict.words.length
-        return {
-          words: dict.words.slice(page * perPage, end) as WordMongooseHydrated[],
-          total: Math.ceil(dict.words.length / perPage) || 0,
-        }
-      },
-      deleteWord: async function (dictId, wordValue) {
-        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
-        if (!dict) {
-          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
-        }
-        if (!dict?.words?.length) {
-          return false
-        }
-        dict.words = dict.words.filter((w) => w.value !== wordValue)
-        await dict.save()
-        return true
-      },
-      editWord: async function (editWordInput) {
-        const { dictId } = editWordInput
-        const dict: DictionaryMongooseHydrated = await Dictionary.findById(dictId)
-        if (!dict) {
-          throw new Error(`Dictionary with ${dictId} not found while checking a word`)
-        }
-        return dict.editWord(editWordInput)
       },
     },
   },
