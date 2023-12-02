@@ -4,9 +4,9 @@ import { DIALOG_STATE, DialogName } from '../dialogs/types'
 import { Update, UserFromGetMe } from 'grammy/types'
 import { Dialog } from '../dialogs'
 import { SessionData } from './types'
-import { userResolver } from '../../../../services/db/resolvers/user'
 import { mapTgUserFromToUser } from '../auth/mapTgUserFromToUser'
 import { createDialogInstance } from './constants'
+import User from '../../../../services/db/models/user'
 
 export class MyContext extends Context {
   user: UserMongooseHydrated | null
@@ -27,7 +27,7 @@ export class MyContext extends Context {
   }
 
   async loadDataIntoContext() {
-    const { user, activeDictionary } = await userResolver.createIfNotExist(
+    const { user, activeDictionary } = await User.createIfNotExits(
       mapTgUserFromToUser(this.from),
       this.session.activeDictionaryId,
     )

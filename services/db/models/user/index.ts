@@ -1,10 +1,10 @@
 import mongoose, { Schema } from 'mongoose'
 import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
-import { DictionaryMongooseHydrated, User, UserMethods, WordMongooseHydrated } from '../../../../types/user'
+import { DictionaryMongooseHydrated, User, UserMethods, UserModel, WordMongooseHydrated } from '../../../../types/user'
 
 const USER_MODEL_NAME = 'User'
 
-const userSchema = new Schema<User, unknown, UserMethods>(
+const userSchema = new Schema<User, UserModel, UserMethods>(
   {
     userName: {
       type: String,
@@ -167,6 +167,29 @@ const userSchema = new Schema<User, unknown, UserMethods>(
   },
 )
 
-const userModel = mongoose.model(USER_MODEL_NAME, userSchema)
+userSchema.static('createIfNotExits', async function (userInput, dictId) {
+  const user = await this.findOne({ tgId: userInput.tgId })
+  if (user) {
+    await user.populate<DictionaryMongooseHydrated[]>('dictionaries')
+
+    let dictList: DictionaryMongooseHydrated[] = []
+    if (dictId) {
+      dictList = user.dictionaries as DictionaryMongooseHydrated[]
+    }
+    return {
+      user,
+      activeDictionary: dictList?.length ? dictList?.find((d) => d?._id.toString() === dictId) : null,
+    }
+  } else {
+    const newUser = new this(userInput)
+    await newUser.save()
+    return {
+      user: newUser,
+      activeDictionary: null,
+    }
+  }
+})
+
+const userModel = mongoose.model<User, UserModel>(USER_MODEL_NAME, userSchema)
 
 export default userModel

@@ -1,4 +1,4 @@
-import { HydratedDocument, PopulatedDoc } from 'mongoose'
+import { HydratedDocument, Model, PopulatedDoc } from 'mongoose'
 
 export type Word = {
   value: string
@@ -24,6 +24,16 @@ export type User = {
   userName?: string
   dictionaries: PopulatedDoc<DictionaryMongooseHydrated>[]
   languageCode?: string
+}
+
+export interface UserModel extends Model<User> {
+  createIfNotExits: (
+    userInput: User,
+    dictId: string,
+  ) => Promise<{
+    user: UserMongooseHydrated
+    activeDictionary: DictionaryMongooseHydrated
+  }>
 }
 
 export type AddWordToDictInput = Word & {
