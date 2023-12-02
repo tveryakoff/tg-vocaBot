@@ -1,8 +1,8 @@
 import { Dialog } from '../index'
-import { dictionaryResolver } from '../../../../../services/db/resolvers/dictionary'
 import { addOrLearnMenu } from '../../menus/AddOrLearn'
 import { DictionaryMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
+import { DIALOG_STATE } from '../types'
 
 export class StartDialog extends Dialog {
   constructor(ctx: MyContext) {
@@ -12,19 +12,21 @@ export class StartDialog extends Dialog {
     this.initialState = null
   }
 
-  async handleStart() {
+  async start(initialState?: DIALOG_STATE['start']) {
+    await super.start(initialState)
     const dictionaries = this.ctx.user.dictionaries as DictionaryMongooseHydrated[]
 
     if (!dictionaries?.length) {
-      const dict = await dictionaryResolver.createDictionary(this.ctx.user, {
+      const dict = await this.ctx.user.createDictionary({
         name: 'Default dictionary',
         words: [],
       })
       await this.ctx.reply(
         `Welcome ${this.ctx?.from?.username}! \nI've just created your first dictionary, go ahead and add some vocab in it!`,
       )
-      this.ctx.session.activeDictionaryId = dict.id.toString()
-      return this.ctx.enterDialog('addWords')
+      this.ctx.session.activeDictionaryId = dict._id.toString()
+      this.ctx.activeDictionary = dict
+      return this.enterDialog('addWords')
     }
     if (dictionaries.length === 1) {
       this.ctx.session.activeDictionaryId = dictionaries[0]._id.toString()

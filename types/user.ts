@@ -41,7 +41,6 @@ export type AddWordToDictInput = Word & {
 }
 
 export type CheckWordInput = {
-  dictId: string
   word: string
   userInput: string
   type: 'word' | 'translation'
@@ -58,20 +57,17 @@ export type EditWordInput = Partial<WordMongooseHydrated> & { dictId: string }
 
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
-  hasWordInDictionary: (dictId: string, word: string) => Promise<boolean>
-  addWordToDictionary: (input: AddWordToDictInput) => Promise<{
-    user: UserMongooseHydrated
-    dictionary: DictionaryMongooseHydrated
-    justAdded: { value: string | null; translation: string | null }
-  }>
-  getWordForTraining: (dictId?: string) => Promise<Word>
-  checkWord: (input: CheckWordInput) => Promise<CheckWordResponse>
   getDictWords: (input: GetDictWordsInput) => Promise<{ words: WordMongooseHydrated[]; total: number }>
   deleteWord: (dictId: string, wordValue: string) => Promise<boolean>
   editWord: (input: EditWordInput) => Promise<Word>
 }
 
 export type DictionaryMethods = {
+  hasWord?: (value: string, translation?: string) => Promise<string>
+  addWord?: (input: AddWordToDictInput) => Promise<{
+    justAdded?: { value: string | null; translation: string | null }
+    message?: string
+  }>
   getWordForTraining?: () => Promise<Word>
   checkWord?: (input: CheckWordInput) => Promise<CheckWordResponse>
   editWord?: (input: EditWordInput) => Promise<Word>

@@ -10,18 +10,28 @@ export class Dialog<T extends DialogName = DialogName> {
     this.ctx = ctx
   }
 
-  async enter(initialState?: DIALOG_STATE[T]) {
+  protected set contextState(state: DIALOG_STATE[T]) {
+    this.ctx.setDialogContext(this.name, state)
+  }
+
+  protected get contextState() {
+    //@ts-ignore
+    return this.ctx.getDialogContext(this.name)
+  }
+
+  async enterDialog<T extends DialogName>(name: T, initialState?: DIALOG_STATE[T]) {
+    return await this.ctx.enterDialog(name, initialState)
+  }
+
+  async start(initialState?: DIALOG_STATE[T]): Promise<any> {
     if (!initialState) {
       this.ctx.setDialogContext(this.name, { ...this.initialState })
     } else {
       this.ctx.setDialogContext(this.name, initialState)
     }
-    return await this.handleStart()
   }
 
   async handleTextInput(): Promise<any> {}
 
   async handleAnyUpdate(): Promise<any> {}
-
-  async handleStart(): Promise<any> {}
 }

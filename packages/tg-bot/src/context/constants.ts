@@ -2,6 +2,7 @@ import { DialogName } from '../dialogs/types'
 import { AddWordsDialog } from '../dialogs/AddWords'
 import { StartDialog } from '../dialogs/Start'
 import { Dialog } from '../dialogs'
+import { StudyWords } from '../dialogs/StudyWords'
 
 export type DialogConstructorMap = {
   [name in DialogName]: any
@@ -10,7 +11,7 @@ export type DialogConstructorMap = {
 export const DIALOG_CONSTRUCTOR: DialogConstructorMap = {
   addWords: AddWordsDialog,
   start: StartDialog,
-  studyWords: null,
+  studyWords: StudyWords,
   editWords: null,
 }
 

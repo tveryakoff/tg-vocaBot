@@ -54,7 +54,7 @@ export class MyContext extends Context {
 
     if (dialog) {
       this.dialog = dialog
-      return await this.dialog.enter(initialState)
+      return await this.dialog.start(initialState)
     }
 
     throw new Error(`Dialog class ${dialogName} doesn't exist`)

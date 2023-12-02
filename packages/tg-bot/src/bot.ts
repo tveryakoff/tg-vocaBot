@@ -6,6 +6,7 @@ import connectMongoDb from '../../../services/db/connect'
 import { addOrLearnMenu } from './menus/AddOrLearn'
 import { INITIAL_SESSION_STATE } from './context/session'
 import { SessionData } from './context/types'
+import studyTypeMenu from './menus/StudyTypeMenu'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -43,7 +44,7 @@ export class TgBot {
   }
 
   setMenus() {
-    this.bot.use(addOrLearnMenu)
+    this.bot.use(studyTypeMenu, addOrLearnMenu)
   }
 
   async setCommands() {

@@ -29,7 +29,7 @@ export enum TRAIN_WORDS_STAGE {
 
 export type TRAIN_WORDS_STATE = {
   stage: TRAIN_WORDS_STAGE
-  type: 'word' | 'translation'
+  type?: 'word' | 'translation'
   word?: string
 }
 

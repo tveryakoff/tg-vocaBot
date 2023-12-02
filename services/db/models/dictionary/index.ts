@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
 import { wordSchema } from '../word'
-import { Dictionary, WordMongooseHydrated } from '../../../../types/user'
+import { Dictionary, DictionaryMethods, WordMongooseHydrated } from '../../../../types/user'
 import { transformWord } from '../../../../utils /dictionary'
 const { Schema } = mongoose
 
 export const DICTIONARY_MODEL_NAME = 'Dictionary'
 
-export const dictionarySchema = new Schema<Dictionary>(
+export const dictionarySchema = new Schema<Dictionary & DictionaryMethods>(
   {
     name: { type: String, default: 'English words dictionary' },
     targetLanguage: { type: String, default: 'English' },
@@ -20,6 +20,45 @@ export const dictionarySchema = new Schema<Dictionary>(
   },
   {
     methods: {
+      hasWord: function (valueRaw, translationRaw) {
+        const value = valueRaw?.trim()?.toLowerCase()
+        const translation = translationRaw?.trim()?.toLowerCase()
+
+        for (const word of this.words) {
+          if (word.value === value) {
+            return `Word "${value}" already exists in your dictionary`
+          }
+          if (word.translation === translation) {
+            return `Word "${translation}" already exists in your dictionary`
+          }
+        }
+      },
+      addWord: async function ({ value: valueRaw, translation: translationRaw, transcription, mark }) {
+        const value = valueRaw.trim().toLowerCase()
+        const translation = translationRaw.trim().toLowerCase()
+
+        const hasWordMessage = this.hasWord(value, translation)
+
+        if (hasWordMessage) {
+          return {
+            justAdded: null,
+            message: hasWordMessage,
+          }
+        }
+        this.words.push({
+          value,
+          translation,
+          transcription,
+          mark,
+        })
+        await this.save()
+        return {
+          justAdded: {
+            value,
+            translation,
+          },
+        }
+      },
       getWordForTraining: async function () {
         const totalSum = this.words
           .sort((a, b) => a.mark - b.mark)
