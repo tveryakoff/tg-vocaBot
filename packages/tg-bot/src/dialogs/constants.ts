@@ -1,20 +1,16 @@
-import { AppState, DIALOG_STATE } from '../context/session'
-import { ADD_WORDS_STAGE, EDIT_WORDS_STAGE, TRAIN_WORDS_STAGE } from './types'
+import { ADD_WORDS_STAGE, DIALOG_STATE, EDIT_WORDS_STAGE, TRAIN_WORDS_STAGE } from './types'
 
 export const INITIAL_DIALOG_STATE: DIALOG_STATE = {
-  [AppState.ADD_WORDS]: {
+  addWords: {
     stage: ADD_WORDS_STAGE.DEFAULT,
     word: null,
   },
-  [AppState.TRAIN_WORDS]: {
+  studyWords: {
     stage: TRAIN_WORDS_STAGE.DEFAULT,
     word: null,
     type: 'word',
   },
-  [AppState.DEFAULT]: {
-    stage: null,
-  },
-  [AppState.EDIT_WORDS]: {
+  editWords: {
     stage: EDIT_WORDS_STAGE.DEFAULT,
     word: null,
     page: 0,

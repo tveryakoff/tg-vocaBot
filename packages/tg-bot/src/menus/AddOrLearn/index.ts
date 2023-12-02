@@ -1,11 +1,10 @@
 import { Menu } from '@grammyjs/menu'
-import { MyContextType } from '../../context'
-import { AppState } from '../../context/session'
+import { MyContext } from '../../context'
 
-const addOrLearnMenu = new Menu<MyContextType>('addOrLearn')
+const addOrLearnMenu = new Menu<MyContext>('addOrLearn')
   .text('Add some vocab', async (ctx) => {
-    return await ctx.dialog.enter(AppState.ADD_WORDS)
+    return ctx.enterDialog('addWords')
   })
-  .text(`Train the words you've added`, (ctx) => ctx.dialog.enter(AppState.TRAIN_WORDS))
+  .text(`Train the words you've added`, (ctx) => ctx.enterDialog('studyWords'))
 
 export { addOrLearnMenu }

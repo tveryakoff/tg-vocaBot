@@ -1,48 +1,27 @@
-import { Middleware, MiddlewareFn } from 'grammy'
-import addWord from './addWord'
-import trainWords from './trainWords'
-import { MyContextType } from '../context'
-import { AppState, DIALOG_STATE } from '../context/session'
-import { INITIAL_DIALOG_STATE } from './constants'
-import editWords from './editWords'
+import { MyContext } from '../context'
+import { DIALOG_STATE, DialogName } from './types'
 
-const dialogsObj: { [name in AppState]: Middleware<MyContextType> } = {
-  [AppState.ADD_WORDS]: addWord,
-  [AppState.TRAIN_WORDS]: trainWords,
-  [AppState.EDIT_WORDS]: editWords,
-  [AppState.DEFAULT]: () => null,
-}
+export class Dialog<T extends DialogName = DialogName> {
+  protected ctx: MyContext
+  public name: DialogName
+  protected initialState: DIALOG_STATE[T]
 
-export const dialogsApi: Middleware<MyContextType> = async (ctx, next) => {
-  ctx.dialog = {
-    enter: async <T extends AppState>(name: T, initialState: DIALOG_STATE[T]) => {
-      ctx.session.state = name
-
-      if (!initialState) {
-        ctx.session[name] = { ...INITIAL_DIALOG_STATE[name] }
-      } else {
-        ctx.session[name] = { ...initialState }
-      }
-
-      const start = dialogsObj[name] as MiddlewareFn<MyContextType>
-
-      return start(ctx, next)
-    },
+  constructor(ctx: MyContext) {
+    this.ctx = ctx
   }
 
-  return await next()
-}
-
-const dialogs: Middleware<MyContextType> = async (ctx, next) => {
-  const state = ctx.session.state
-
-  if (state !== AppState.ADD_WORDS && state !== AppState.TRAIN_WORDS && state !== AppState.EDIT_WORDS) {
-    return await next()
+  async enter(initialState?: DIALOG_STATE[T]) {
+    if (!initialState) {
+      this.ctx.setDialogContext(this.name, { ...this.initialState })
+    } else {
+      this.ctx.setDialogContext(this.name, initialState)
+    }
+    return await this.handleStart()
   }
 
-  const start = dialogsObj[state] as MiddlewareFn<MyContextType>
+  async handleTextInput(): Promise<any> {}
 
-  return start(ctx, next)
+  async handleAnyUpdate(): Promise<any> {}
+
+  async handleStart(): Promise<any> {}
 }
-
-export default dialogs

@@ -1,7 +1,11 @@
-import { Word, WordMongooseHydrated } from '../../../../types/user'
+import { WordMongooseHydrated } from '../../../../types/user'
 
-export type DEFAULT_STATE = {
-  stage?: string
+export type DialogName = 'addWords' | 'studyWords' | 'editWords'
+
+export type DIALOG_STATE = {
+  addWords: ADD_WORDS_STATE
+  studyWords: TRAIN_WORDS_STATE
+  editWords: EDIT_WORDS_STATE
 }
 
 export enum ADD_WORDS_STAGE {
