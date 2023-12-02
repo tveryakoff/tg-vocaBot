@@ -1,5 +1,4 @@
 import { HydratedDocument, PopulatedDoc } from 'mongoose'
-import { W } from 'mongodb'
 
 export type Word = {
   value: string
@@ -23,7 +22,7 @@ export type User = {
   firstName?: string
   lastName?: string
   userName?: string
-  dictionaries: PopulatedDoc<Dictionary & Document>[]
+  dictionaries: PopulatedDoc<DictionaryMongooseHydrated>[]
   languageCode?: string
 }
 

@@ -1,13 +1,11 @@
 import { Bot, session } from 'grammy'
-import { AddWordsDialog, MyContext } from './context'
+import { MyContext } from './context'
 import mongoose from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
 import connectMongoDb from '../../../services/db/connect'
 import { addOrLearnMenu } from './menus/AddOrLearn'
 import { INITIAL_SESSION_STATE } from './context/session'
 import { SessionData } from './context/types'
-import { userResolver } from '../../../services/db/resolvers/user'
-import { mapTgUserFromToUser } from './auth/mapTgUserFromToUser'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -39,18 +37,7 @@ export class TgBot {
 
   async enrichContextObject() {
     this.bot.use(async (ctx, next) => {
-      const user = await userResolver.createIfNotExist(mapTgUserFromToUser(ctx.from))
-      if (user) {
-        ctx.user = user
-      }
-
-      const activeDialogName = ctx?.session?.activeDialogName
-      if (activeDialogName) {
-        if (activeDialogName === 'addWords') {
-          ctx.dialog = new AddWordsDialog(ctx)
-        } else if (activeDialogName === 'studyWords') {
-        }
-      }
+      await ctx.loadDataIntoContext()
       return await next()
     })
   }
@@ -67,6 +54,7 @@ export class TgBot {
       { command: 'editwords', description: 'Edit words' },
     ])
 
+    this.bot.command('start', async (ctx) => ctx.enterDialog('start'))
     this.bot.command('addwords', async (ctx) => ctx.enterDialog('addWords'))
     this.bot.command('studywords', async (ctx) => ctx.enterDialog('studyWords'))
   }
