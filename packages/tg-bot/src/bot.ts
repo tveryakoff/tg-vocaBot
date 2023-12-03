@@ -1,4 +1,4 @@
-import { Bot, session } from 'grammy'
+import { Bot, BotError, GrammyError, HttpError, session } from 'grammy'
 import { MyContext } from './context'
 import mongoose from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
@@ -17,6 +17,23 @@ export class TgBot {
     this.bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
   }
 
+  private static async errorBoundary(err: BotError<MyContext>) {
+    if (err instanceof HttpError) {
+      console.error(`HttpError occurred in Dialog middleware`, err)
+      await err.ctx.reply(`Seems like we're having some network problems, please try again`)
+      return
+    }
+
+    console.error(`Bot error in Dialog middleware`, err)
+    await err.ctx.reply(`Oops, an error occurred, let's try again!`)
+
+    if (process.env.NODE_ENV === 'production') {
+      return await err.ctx.enterDialog('start')
+    }
+
+    throw err
+  }
+
   async connectToDb() {
     try {
       const { DB_CONNECTION_URI, DB_NAME } = process.env
@@ -24,6 +41,7 @@ export class TgBot {
       console.log(`Connected to DB, starting the bot...`)
     } catch (e) {
       console.log('Error while connecting to DB', e)
+      throw new Error('Connection DB error')
     }
   }
 
@@ -75,6 +93,8 @@ export class TgBot {
     this.setMenus()
     await this.setCommands()
     this.setUserDialogs()
+
+    this.bot.catch(TgBot.errorBoundary)
 
     return this.bot.start()
   }

@@ -12,6 +12,8 @@ export class EditWords extends Dialog<'editWords'> {
   }
 
   async start(initialState?: DIALOG_STATE['editWords']) {
+    //TODO start condition
+
     await super.start(initialState)
 
     const { stage, word } = this.contextState
