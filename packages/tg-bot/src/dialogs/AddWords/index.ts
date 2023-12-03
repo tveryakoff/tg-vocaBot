@@ -10,8 +10,16 @@ export class AddWordsDialog extends Dialog {
     this.initialState = { stage: ADD_WORDS_STAGE.DEFAULT, word: null }
   }
 
+  async gate() {
+    if (!this.ctx.user || !this.ctx.activeDictionary) {
+      await this.ctx.reply(`Seems like you don't have a dictionary yet, let me create one for you!`)
+      return await this.enterDialog('start')
+    }
+  }
+
   async start(initialState?: DIALOG_STATE['addWords']) {
     await super.start(initialState)
+
     const state = this.contextState
 
     const stage = state.stage

@@ -1,4 +1,4 @@
-import { Bot, BotError, GrammyError, HttpError, session } from 'grammy'
+import { Bot, BotError, HttpError, session } from 'grammy'
 import { MyContext } from './context'
 import mongoose from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'

@@ -5,11 +5,7 @@ import { Dialog } from '../dialogs'
 import { StudyWords } from '../dialogs/StudyWords'
 import { EditWords } from '../dialogs/EditWordsClass'
 
-export type DialogConstructorMap = {
-  [name in DialogName]: any
-}
-
-export const DIALOG_CONSTRUCTOR: DialogConstructorMap = {
+export const DIALOG_CONSTRUCTOR = {
   addWords: AddWordsDialog,
   start: StartDialog,
   studyWords: StudyWords,

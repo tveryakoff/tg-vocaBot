@@ -11,16 +11,23 @@ export class StudyWords extends Dialog<'studyWords'> {
     this.initialState = { ...INITIAL_DIALOG_STATE.studyWords }
   }
 
-  async start(initialState?: DIALOG_STATE['studyWords']): Promise<any> {
+  async gate() {
+    if (!this.ctx.user || !this.ctx.activeDictionary) {
+      return await this.enterDialog('start')
+    }
+
+    const words = this.ctx?.activeDictionary?.words
+
+    if (!words?.length) {
+      await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
+      return this.enterDialog('addWords')
+    }
+  }
+
+  async start(initialState?: DIALOG_STATE['studyWords']) {
     await super.start(initialState)
-    const { words } = this.ctx.activeDictionary
 
     if (!this.contextState.stage || this.contextState.stage === TRAIN_WORDS_STAGE.DEFAULT) {
-      if (!words?.length) {
-        await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
-        return this.ctx.enterDialog('addWords')
-      }
-
       this.contextState = { stage: TRAIN_WORDS_STAGE.GET_WORD }
 
       return await this.ctx.reply(`Please choose the way you want to learn new words:`, {

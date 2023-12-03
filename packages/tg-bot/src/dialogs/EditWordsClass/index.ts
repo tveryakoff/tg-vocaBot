@@ -1,7 +1,7 @@
 import { Dialog } from '../index'
 import { MyContext } from '../../context'
 import { INITIAL_DIALOG_STATE } from '../constants'
-import { DIALOG_STATE, EDIT_WORDS_STAGE } from '../types'
+import { DIALOG_STATE, DialogName, EDIT_WORDS_STAGE } from '../types'
 import editWordMenuType from '../../menus/EditWord'
 
 export class EditWords extends Dialog<'editWords'> {
@@ -11,20 +11,34 @@ export class EditWords extends Dialog<'editWords'> {
     this.initialState = { ...INITIAL_DIALOG_STATE.editWords }
   }
 
-  async start(initialState?: DIALOG_STATE['editWords']) {
-    //TODO start condition
+  async gate() {
+    let dialogName: DialogName = 'start'
+    let canPass = true
+    if (!this.ctx.user || !this.ctx.activeDictionary) {
+      dialogName = 'start'
+      canPass = false
+    }
 
-    await super.start(initialState)
+    const words = this.ctx?.activeDictionary?.words
+
+    if (!words?.length) {
+      await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
+      dialogName = 'addWords'
+      canPass = false
+    }
+
+    return {
+      canPass,
+      dialogName,
+    }
+  }
+
+  async start(initialState?: DIALOG_STATE['editWords']) {
+    super.start(initialState)
 
     const { stage, word } = this.contextState
-    const { words } = this.ctx?.activeDictionary
 
     if (!stage || stage === EDIT_WORDS_STAGE.DEFAULT) {
-      if (!words?.length) {
-        await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
-        return this.enterDialog('addWords')
-      }
-
       return await this.ctx.reply(`Choose the word you want to edit:`, { reply_markup: editWordMenuType })
     }
 

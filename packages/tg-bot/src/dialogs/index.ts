@@ -15,6 +15,7 @@ export class Dialog<T extends DialogName = DialogName> {
   }
 
   protected get contextState() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     return this.ctx.getDialogContext(this.name)
   }

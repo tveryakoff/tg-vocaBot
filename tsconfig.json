@@ -10,6 +10,7 @@
     "strictFunctionTypes": false,
     "typeRoots": ["./types"],
     "strictNullChecks": false,
+    "noImplicitAny": false,
   },
   "include": [
     "**/*.ts",
