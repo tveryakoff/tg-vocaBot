@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { wordSchema } from '../word'
 import { Dictionary, DictionaryMethods, WordMongooseHydrated } from '../../../../types/user'
-import { transformWord } from '../../../../utils /dictionary'
+import { transformWord } from '../../../../utils/dictionary'
 const { Schema } = mongoose
 
 export const DICTIONARY_MODEL_NAME = 'Dictionary'

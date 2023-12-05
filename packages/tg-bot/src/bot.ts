@@ -37,6 +37,7 @@ export class TgBot {
   async connectToDb() {
     try {
       const { DB_CONNECTION_URI, DB_NAME } = process.env
+      console.log(`connecting to DB ${DB_CONNECTION_URI}`)
       await connectMongoDb(DB_CONNECTION_URI, DB_NAME)
       console.log(`Connected to DB, starting the bot...`)
     } catch (e) {
