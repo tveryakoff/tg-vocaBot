@@ -11,7 +11,7 @@ export class StudyWords extends Dialog<'studyWords'> {
     this.initialState = { ...INITIAL_DIALOG_STATE.studyWords }
   }
 
-  async gate() {
+  async start(initialState?: DIALOG_STATE['studyWords']) {
     if (!this.ctx.user || !this.ctx.activeDictionary) {
       return await this.enterDialog('start')
     }
@@ -22,9 +22,7 @@ export class StudyWords extends Dialog<'studyWords'> {
       await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
       return this.enterDialog('addWords')
     }
-  }
 
-  async start(initialState?: DIALOG_STATE['studyWords']) {
     await super.start(initialState)
 
     if (!this.contextState.stage || this.contextState.stage === TRAIN_WORDS_STAGE.DEFAULT) {

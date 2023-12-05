@@ -1,7 +1,7 @@
 import { Dialog } from '../index'
 import { MyContext } from '../../context'
 import { INITIAL_DIALOG_STATE } from '../constants'
-import { DIALOG_STATE, DialogName, EDIT_WORDS_STAGE } from '../types'
+import { DIALOG_STATE, EDIT_WORDS_STAGE } from '../types'
 import editWordMenuType from '../../menus/EditWord'
 
 export class EditWords extends Dialog<'editWords'> {
@@ -11,29 +11,17 @@ export class EditWords extends Dialog<'editWords'> {
     this.initialState = { ...INITIAL_DIALOG_STATE.editWords }
   }
 
-  async gate() {
-    let dialogName: DialogName = 'start'
-    let canPass = true
+  async start(initialState?: DIALOG_STATE['editWords']) {
     if (!this.ctx.user || !this.ctx.activeDictionary) {
-      dialogName = 'start'
-      canPass = false
+      return this.enterDialog('start')
     }
 
     const words = this.ctx?.activeDictionary?.words
 
     if (!words?.length) {
       await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
-      dialogName = 'addWords'
-      canPass = false
+      return this.enterDialog('addWords')
     }
-
-    return {
-      canPass,
-      dialogName,
-    }
-  }
-
-  async start(initialState?: DIALOG_STATE['editWords']) {
     super.start(initialState)
 
     const { stage, word } = this.contextState
