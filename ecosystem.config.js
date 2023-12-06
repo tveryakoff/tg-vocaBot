@@ -4,7 +4,7 @@ module.exports = {
   apps: [
     {
       name: 'tgBot',
-      script: 'node -r dotenv/config && npm run start',
+      script: 'dotenv -e ../.env && npm run start',
       env: {
         NODE_ENV: process?.env?.NODE_ENV,
         DB_CONNECTION_URI: process?.env?.DB_CONNECTION_URI,
@@ -21,7 +21,7 @@ module.exports = {
       ref: 'origin/main',
       repo: 'git@bitbucket.org:tveryakov-projects/big-dict-mono.git',
       path: '~/workspace/big-dict-new/',
-      'post-deploy': 'npm ci --include=dev && npm run build && pm2 start',
+      'post-deploy': 'npm install -g dotenv-cli && npm ci --include=dev && npm run build && pm2 start',
     },
   },
 }
