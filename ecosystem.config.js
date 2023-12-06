@@ -21,7 +21,7 @@ module.exports = {
       ref: 'origin/main',
       repo: 'git@bitbucket.org:tveryakov-projects/big-dict-mono.git',
       path: '~/workspace/big-dict-new/',
-      'post-deploy': 'npm i dotenv-cli -g && npm ci --include=dev && npm run build && pm2 start',
+      'post-deploy': 'npm i dotenv-cli -g && npm ci --include=dev && npm run build',
     },
   },
 }
