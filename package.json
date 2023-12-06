@@ -2,7 +2,10 @@
   "name": "monorepo",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "npm run build --prefix ./packages/tg-bot",
+    "start": "npm run start --prefix ./packages/tg-bot"
+  },
   "private": true,
   "devDependencies": {
     "@types/node": "^20.5.6",

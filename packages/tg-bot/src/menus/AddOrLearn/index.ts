@@ -5,6 +5,7 @@ const addOrLearnMenu = new Menu<MyContext>('addOrLearn')
   .text('Add some vocab', async (ctx) => {
     return ctx.enterDialog('addWords')
   })
-  .text(`Train the words you've added`, (ctx) => ctx.enterDialog('studyWords'))
+  .row()
+  .text(`Study words`, (ctx) => ctx.enterDialog('studyWords'))
 
 export { addOrLearnMenu }
