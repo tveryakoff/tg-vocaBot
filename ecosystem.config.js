@@ -4,7 +4,7 @@ module.exports = {
   apps: [
     {
       name: 'tgBot',
-      script: 'dotenv -e ../.env && npm run start',
+      script: 'dotenv -e ~/workspace/big-dict-new/.env && npm run start',
       env: {
         NODE_ENV: process?.env?.NODE_ENV,
         DB_CONNECTION_URI: process?.env?.DB_CONNECTION_URI,
