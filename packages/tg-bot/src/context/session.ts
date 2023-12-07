@@ -22,4 +22,5 @@ export const INITIAL_SESSION_STATE: SessionData = {
   addDictionary: {
     stage: ADD_DICTIONARY_STAGE.DEFAULT,
   },
+  selectActiveDictionary: null,
 }

@@ -45,8 +45,8 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
           return null
         }
 
-        await this.populate({ path: 'dictionaries', match: { _id: { $eq: dictId } } })
-        return this.dictionaries?.[0] || null
+        const dict = await Dictionary.findById(dictId)
+        return dict
       },
     },
   },
@@ -55,23 +55,11 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
 userSchema.static('createIfNotExits', async function (userInput, dictId) {
   const user = await this.findOne({ tgId: userInput.tgId })
   if (user) {
-    await user.populate<DictionaryMongooseHydrated[]>('dictionaries')
-
-    let dictList: DictionaryMongooseHydrated[] = []
-    if (dictId) {
-      dictList = user.dictionaries as DictionaryMongooseHydrated[]
-    }
-    return {
-      user,
-      activeDictionary: dictList?.length ? dictList?.find((d) => d?._id.toString() === dictId) : null,
-    }
+    return user
   } else {
     const newUser = new this(userInput)
     await newUser.save()
-    return {
-      user: newUser,
-      activeDictionary: null,
-    }
+    return newUser
   }
 })
 

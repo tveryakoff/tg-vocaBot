@@ -1,6 +1,6 @@
 import { WordMongooseHydrated } from '../../../../types/user'
 
-export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start' | 'addDictionary'
+export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start' | 'addDictionary' | 'selectActiveDictionary'
 
 export type DIALOG_STATE = {
   addWords: ADD_WORDS_STATE
@@ -8,6 +8,7 @@ export type DIALOG_STATE = {
   editWords: EDIT_WORDS_STATE
   addDictionary: ADD_DICTIONARY_STATE
   start?: null
+  selectActiveDictionary: null
 }
 
 export enum ADD_DICTIONARY_STAGE {

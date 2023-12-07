@@ -1,5 +1,5 @@
 import { Api, Context } from 'grammy'
-import { DictionaryMongooseHydrated, UserMongooseHydrated } from '../../../../types/user'
+import { Dictionary, DictionaryMongooseHydrated, UserMongooseHydrated } from '../../../../types/user'
 import { DIALOG_STATE, DialogName } from '../dialogs/types'
 import { Update, UserFromGetMe } from 'grammy/types'
 import { Dialog } from '../dialogs'
@@ -31,13 +31,15 @@ export class MyContext extends Context {
   }
 
   async loadDataIntoContext() {
-    const { user, activeDictionary } = await User.createIfNotExits(
-      mapTgUserFromToUser(this.from),
-      this.session.activeDictionaryId,
-    )
+    this.user = await User.createIfNotExits(mapTgUserFromToUser(this.from))
 
-    this.user = user
-    this.activeDictionary = activeDictionary
+    if (!this.user) {
+      throw new Error('User not found')
+    }
+
+    if (this.session.activeDictionaryId) {
+      this.activeDictionary = await this.user.getDictionary(this.session.activeDictionaryId)
+    }
 
     const activeDialogName = this?.session?.activeDialogName
 
@@ -47,6 +49,14 @@ export class MyContext extends Context {
         this.dialog = dialog
       }
     }
+  }
+
+  async loadDictionariesNames(fields: Array<keyof Dictionary>) {
+    if (this.user.populated('dictionaries')) {
+      return
+    }
+
+    await this.user.populate('dictionaries', ...fields)
   }
 
   async enterDialog(dialogName: DialogName, initialState?: DIALOG_STATE[DialogName]) {

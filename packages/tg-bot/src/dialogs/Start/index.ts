@@ -1,6 +1,5 @@
 import { Dialog } from '../index'
 import { addOrLearnMenu } from '../../menus/AddOrLearn'
-import { DictionaryMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
 import { DIALOG_STATE } from '../types'
 import { selectActiveDictionaryMenu } from '../../menus/SelectActiveDictionary'
@@ -15,7 +14,7 @@ export class StartDialog extends Dialog {
 
   async start(initialState?: DIALOG_STATE['start']) {
     await super.start(initialState)
-    const dictionaries = this.ctx.user.dictionaries as DictionaryMongooseHydrated[]
+    const dictionaries = this.ctx.user.dictionaries
 
     if (!dictionaries?.length) {
       const dict = await this.ctx.user.createDictionary({
@@ -30,7 +29,7 @@ export class StartDialog extends Dialog {
       return this.enterDialog('addWords')
     }
     if (dictionaries.length === 1) {
-      this.ctx.session.activeDictionaryId = dictionaries[0]._id.toString()
+      this.ctx.session.activeDictionaryId = dictionaries[0].toString()
       return await this.ctx.reply(`Welcome ${this.ctx?.from?.username}! \n\nWhat are you up today?`, {
         reply_markup: addOrLearnMenu,
       })

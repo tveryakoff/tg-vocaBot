@@ -27,13 +27,7 @@ export type User = {
 }
 
 export interface UserModel extends Model<User> {
-  createIfNotExits: (
-    userInput: User,
-    dictId: string,
-  ) => Promise<{
-    user: UserMongooseHydrated
-    activeDictionary: DictionaryMongooseHydrated
-  }>
+  createIfNotExits: (userInput: User) => Promise<UserMongooseHydrated>
 }
 
 export type AddWordToDictInput = Word & {

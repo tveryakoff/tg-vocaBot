@@ -18,4 +18,5 @@ export const INITIAL_DIALOG_STATE: DIALOG_STATE = {
   addDictionary: {
     stage: ADD_DICTIONARY_STAGE.DEFAULT,
   },
+  selectActiveDictionary: null,
 }
