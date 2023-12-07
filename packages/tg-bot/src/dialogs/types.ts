@@ -1,12 +1,22 @@
 import { WordMongooseHydrated } from '../../../../types/user'
 
-export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start'
+export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start' | 'addDictionary'
 
 export type DIALOG_STATE = {
   addWords: ADD_WORDS_STATE
   studyWords: TRAIN_WORDS_STATE
   editWords: EDIT_WORDS_STATE
+  addDictionary: ADD_DICTIONARY_STATE
   start?: null
+}
+
+export enum ADD_DICTIONARY_STAGE {
+  DEFAULT = 'default',
+  NAME = 'name',
+}
+
+export type ADD_DICTIONARY_STATE = {
+  stage: ADD_DICTIONARY_STAGE
 }
 
 export enum ADD_WORDS_STAGE {

@@ -1,4 +1,4 @@
-import { EDIT_WORDS_STAGE } from '../dialogs/types'
+import { ADD_DICTIONARY_STAGE, EDIT_WORDS_STAGE } from '../dialogs/types'
 import { SessionData } from './types'
 
 export const INITIAL_SESSION_STATE: SessionData = {
@@ -18,5 +18,8 @@ export const INITIAL_SESSION_STATE: SessionData = {
     stage: EDIT_WORDS_STAGE.DEFAULT,
     page: 0,
     word: null,
+  },
+  addDictionary: {
+    stage: ADD_DICTIONARY_STAGE.DEFAULT,
   },
 }

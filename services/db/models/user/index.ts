@@ -39,6 +39,15 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
         await this.save()
         return dict
       },
+
+      getDictionary: async function (dictId) {
+        if (this.dictionaries.indexOf(dictId) === -1) {
+          return null
+        }
+
+        await this.populate({ path: 'dictionaries', match: { _id: { $eq: dictId } } })
+        return this.dictionaries?.[0] || null
+      },
     },
   },
 )

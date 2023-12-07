@@ -26,6 +26,10 @@ export class MyContext extends Context {
     this.session[name] = { ...context }
   }
 
+  setActiveDictionary(dictId: string) {
+    this.session.activeDictionaryId = dictId
+  }
+
   async loadDataIntoContext() {
     const { user, activeDictionary } = await User.createIfNotExits(
       mapTgUserFromToUser(this.from),

@@ -1,4 +1,4 @@
-import { ADD_WORDS_STAGE, DIALOG_STATE, EDIT_WORDS_STAGE, TRAIN_WORDS_STAGE } from './types'
+import { ADD_DICTIONARY_STAGE, ADD_WORDS_STAGE, DIALOG_STATE, EDIT_WORDS_STAGE, TRAIN_WORDS_STAGE } from './types'
 
 export const INITIAL_DIALOG_STATE: DIALOG_STATE = {
   addWords: {
@@ -14,5 +14,8 @@ export const INITIAL_DIALOG_STATE: DIALOG_STATE = {
     stage: EDIT_WORDS_STAGE.DEFAULT,
     word: null,
     page: 0,
+  },
+  addDictionary: {
+    stage: ADD_DICTIONARY_STAGE.DEFAULT,
   },
 }

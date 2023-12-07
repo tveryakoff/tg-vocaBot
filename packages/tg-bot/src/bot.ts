@@ -74,12 +74,14 @@ export class TgBot {
       { command: 'addwords', description: 'Add words' },
       { command: 'studywords', description: 'Study words' },
       { command: 'editwords', description: 'Edit words' },
+      { command: 'createdictionary', description: 'Create a new dictionary (max: 5)' },
     ])
 
     this.bot.command('start', async (ctx) => ctx.enterDialog('start'))
     this.bot.command('addwords', async (ctx) => ctx.enterDialog('addWords'))
     this.bot.command('studywords', async (ctx) => ctx.enterDialog('studyWords'))
     this.bot.command('editwords', async (ctx) => ctx.enterDialog('editWords'))
+    this.bot.command('createdictionary', async (ctx) => ctx.enterDialog('addDictionary'))
   }
 
   setUserDialogs() {

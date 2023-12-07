@@ -4,12 +4,14 @@ import { StartDialog } from '../dialogs/Start'
 import { Dialog } from '../dialogs'
 import { StudyWords } from '../dialogs/StudyWords'
 import { EditWords } from '../dialogs/EditWordsClass'
+import AddDictionary from '../dialogs/AddDictionary'
 
 export const DIALOG_CONSTRUCTOR = {
   addWords: AddWordsDialog,
   start: StartDialog,
   studyWords: StudyWords,
   editWords: EditWords,
+  addDictionary: AddDictionary,
 }
 
 export const createDialogInstance = (dialogName: DialogName, params: any): Dialog | null => {
