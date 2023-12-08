@@ -19,17 +19,25 @@ export class TgBot {
     this.bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
   }
 
-  private static async errorBoundary(err: BotError<MyContext>) {
+  private static async errorBoundary(err: BotError<MyContext> & { method: string }) {
     if (err instanceof HttpError) {
       console.error(`HttpError occurred in Dialog middleware`, err)
       await err.ctx.reply(`Seems like we're having some network problems, please try again`)
       return
     }
 
-    console.error(`Bot error in Dialog middleware`, err)
-    await err.ctx.reply(`Oops, an error occurred, let's try again!`)
+    const isProd = process.env.NODE_ENV === 'production'
 
-    if (process.env.NODE_ENV === 'production') {
+    console.dir(Object.keys(err))
+
+    //@ts-ignore
+    if (isProd && err.error.method === 'editMessageReplyMarkup') {
+      return
+    }
+
+    if (isProd) {
+      await err.ctx.reply(`Oops, an error occurred, let's try again!`)
+      console.error(`Bot error in Dialog middleware`, err)
       return await err.ctx.enterDialog('start')
     }
 
@@ -112,6 +120,10 @@ export class TgBot {
 
     this.bot.catch(TgBot.errorBoundary)
 
-    return this.bot.start()
+    await this.bot.start({
+      onStart: () => {
+        console.log('Bot has been started!')
+      },
+    })
   }
 }

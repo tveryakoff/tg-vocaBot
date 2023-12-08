@@ -22,6 +22,9 @@ export type DIALOG_STATE = Partial<{
 export type MANAGE_DICTIONARY_STATE = Partial<{
   stage: MANAGE_DICTIONARY_STAGE
   editDictId: string
+  page: number
+  total: number
+  word: WordMongooseHydrated
 }>
 
 export enum MANAGE_DICTIONARY_STAGE {
@@ -80,4 +83,5 @@ export type EDIT_WORDS_STATE = Partial<{
   stage: EDIT_WORDS_STAGE
   page?: number
   total?: number
+  deletingWordId?: string
 }>

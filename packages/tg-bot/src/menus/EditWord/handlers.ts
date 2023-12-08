@@ -5,12 +5,22 @@ import { EDIT_WORDS_STAGE } from '../../dialogs/types'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
 
 export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
-  await ctx.activeDictionary.deleteWord(word._id.toString())
-  ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
-  ctx.menu.update()
-  if (!ctx.activeDictionary.words.length) {
-    await ctx.reply(`Your dictionary is empty! Let's add some words`)
-    return ctx.enterDialog('addWords')
+  try {
+    const wordId = word._id.toString()
+    const contextData = ctx.getDialogContext('editWords')
+
+    if (contextData.deletingWordId) {
+      return
+    }
+
+    const deleteWordPromise = ctx.activeDictionary.deleteWord(wordId)
+    ctx.setDialogContext('editWords', { ...contextData, deletingWordId: wordId })
+    await deleteWordPromise
+    ctx.setDialogContext('editWords', { ...contextData, deletingWordId: undefined })
+    ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
+    await ctx.menu.update()
+  } catch (e) {
+    console.log('e')
   }
 }
 

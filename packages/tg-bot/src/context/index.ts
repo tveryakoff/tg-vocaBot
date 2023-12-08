@@ -31,7 +31,11 @@ export class MyContext extends Context {
   }
 
   setEditDictionary(dictId: string) {
-    this.session.editDictionaryId = dictId
+    this.session.editDictionaryId = dictId.toString()
+  }
+
+  get editDictionaryId() {
+    return this.session.editDictionaryId
   }
 
   async loadDataIntoContext() {

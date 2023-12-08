@@ -22,6 +22,9 @@ export class EditWords extends Dialog<'editWords'> {
       await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
       return this.enterDialog('addWords')
     }
+
+    this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
+
     super.start(initialState)
 
     const { stage, word } = this.contextState

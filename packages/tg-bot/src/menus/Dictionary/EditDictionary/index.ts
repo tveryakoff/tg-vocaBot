@@ -9,7 +9,9 @@ export class EditDictionaryMenuFacade extends Menu<MyContext> {
       ctx.enterDialog('manageDictionary', { stage: MANAGE_DICTIONARY_STAGE.CHANGE_NAME }),
     )
       .row()
-      .text('Edit words')
+      .text('Edit words', async (ctx) => {
+        return ctx.enterDialog('editWords')
+      })
       .row()
       .text('Delete', (ctx) => ctx.enterDialog('manageDictionary', { stage: MANAGE_DICTIONARY_STAGE.DELETE_DICT }))
       .row()

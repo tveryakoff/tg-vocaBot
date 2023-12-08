@@ -29,6 +29,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     const hasMany = this.ctx.user.dictionaries.length > 1
 
     if (isInitial && this.ctx.user.dictionaries.length === 1) {
+      this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
       return await this.ctx.reply(`Manage dictionary`, { reply_markup: editDictionaryMenu })
     }
 

@@ -1,6 +1,7 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
 import { goToChooseWord, goToEditWordTranslation, goToEditWordValue, deleteWord } from './handlers'
+import { BotError } from 'grammy'
 
 const editWordMenuType = new Menu<MyContext>('editWordMenu')
 editWordMenuType.dynamic(async (ctx, range) => {
