@@ -8,24 +8,16 @@ type Params = {
   onSelect: (ctx: MyContext, dict: DictionaryMongooseHydrated) => any
 }
 
-class SelectDictionaryMenu {
-  private readonly id: string
+class SelectDictionaryMenu extends Menu<MyContext> {
   private readonly getDictionaries: (ctx: MyContext) => Promise<DictionaryMongooseHydrated[]>
   private onSelect: (ctx: MyContext, dict: DictionaryMongooseHydrated) => any
-  public menu: Menu<MyContext>
 
   constructor({ id, getDictionaries, onSelect }: Params) {
-    this.id = id
+    super(id)
     this.getDictionaries = getDictionaries
     this.onSelect = onSelect
 
-    this.menu = new Menu<MyContext>(this.id)
-
-    this.init()
-  }
-
-  async init() {
-    return this.menu.row().dynamic(async (ctx, range) => {
+    this.row().dynamic(async (ctx, range) => {
       const dictionaries = await this.getDictionaries(ctx)
       for (const dict of dictionaries) {
         range.text(dict?.name, async (ctx) => this.onSelect(ctx, dict)).row()

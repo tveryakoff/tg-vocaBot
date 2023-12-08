@@ -1,9 +1,8 @@
 import { Dialog } from '../index'
 import { MyContext } from '../../context'
 import { DIALOG_STATE, MANAGE_DICTIONARY_STAGE } from '../types'
-import { editActiveDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
+import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
 import { editDictionaryMenu } from '../../menus/Dictionary/EditDictionary'
-import { DictionaryMongooseHydrated } from '../../../../../types/user'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
   constructor(ctx: MyContext) {
@@ -36,7 +35,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     if (isInitial && hasMany) {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.SELECT_DICT
       return await this.ctx.reply(`Select the dictionary you'd like to manage:`, {
-        reply_markup: editActiveDictionaryMenu,
+        reply_markup: selectEditDictionaryMenu,
       })
     }
 

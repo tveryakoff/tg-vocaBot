@@ -9,7 +9,7 @@ import { SessionData } from './context/types'
 import studyTypeMenu from './menus/StudyTypeMenu'
 import editWordMenuType from './menus/EditWord'
 import { selectActiveDictionaryMenu } from './menus/Dictionary/SelectActiveDictionary'
-import { editActiveDictionaryMenu } from './menus/Dictionary/SelectEditDictionary'
+import { selectEditDictionaryMenu } from './menus/Dictionary/SelectEditDictionary'
 import { editDictionaryMenu } from './menus/Dictionary/EditDictionary'
 
 export class TgBot {
@@ -72,7 +72,7 @@ export class TgBot {
       addOrLearnMenu,
       editWordMenuType,
       selectActiveDictionaryMenu,
-      editActiveDictionaryMenu,
+      selectEditDictionaryMenu,
       editDictionaryMenu,
     )
   }
