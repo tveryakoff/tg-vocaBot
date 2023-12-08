@@ -28,7 +28,7 @@ export class Dialog<T extends DialogName = DialogName> {
     if (this.name !== this.ctx.session.activeDialogName) {
       this.ctx.session.activeDialogName = this.name
     }
-    if (!initialState) {
+    if (!initialState && this.initialState) {
       this.ctx.setDialogContext(this.name, { ...this.initialState })
     } else {
       this.ctx.setDialogContext(this.name, initialState)

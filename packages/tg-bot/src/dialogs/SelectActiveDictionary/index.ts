@@ -6,7 +6,6 @@ class SelectActiveDictionary extends Dialog<'selectActiveDictionary'> {
   constructor(initialState: DIALOG_STATE['selectActiveDictionary']) {
     super(initialState)
     this.name = 'selectActiveDictionary'
-    this.initialState = null
   }
 
   async start(initialState: DIALOG_STATE['selectActiveDictionary']) {

@@ -2,23 +2,23 @@ import { WordMongooseHydrated } from '../../../../types/user'
 
 export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start' | 'addDictionary' | 'selectActiveDictionary'
 
-export type DIALOG_STATE = {
+export type DIALOG_STATE = Partial<{
+  start: null
   addWords: ADD_WORDS_STATE
   studyWords: TRAIN_WORDS_STATE
   editWords: EDIT_WORDS_STATE
   addDictionary: ADD_DICTIONARY_STATE
-  start?: null
   selectActiveDictionary: null
-}
+}>
 
 export enum ADD_DICTIONARY_STAGE {
   DEFAULT = 'default',
   NAME = 'name',
 }
 
-export type ADD_DICTIONARY_STATE = {
+export type ADD_DICTIONARY_STATE = Partial<{
   stage: ADD_DICTIONARY_STAGE
-}
+}>
 
 export enum ADD_WORDS_STAGE {
   DEFAULT = 'default',
@@ -26,10 +26,10 @@ export enum ADD_WORDS_STAGE {
   TRANSLATION = 'translation',
 }
 
-export type ADD_WORDS_STATE = {
+export type ADD_WORDS_STATE = Partial<{
   stage: ADD_WORDS_STAGE
   word?: string
-}
+}>
 
 export enum TRAIN_WORDS_STAGE {
   DEFAULT = 'default',
@@ -38,11 +38,11 @@ export enum TRAIN_WORDS_STAGE {
   CHECK_WORD = 'checkWord',
 }
 
-export type TRAIN_WORDS_STATE = {
+export type TRAIN_WORDS_STATE = Partial<{
   stage: TRAIN_WORDS_STAGE
   type?: 'word' | 'translation'
   word?: string
-}
+}>
 
 export enum EDIT_WORDS_STAGE {
   DEFAULT = 'default',
@@ -53,9 +53,9 @@ export enum EDIT_WORDS_STAGE {
   TRANSLATION_EDIT_END = 'translationEditEnd',
 }
 
-export type EDIT_WORDS_STATE = {
+export type EDIT_WORDS_STATE = Partial<{
   word?: WordMongooseHydrated
   stage: EDIT_WORDS_STAGE
   page?: number
   total?: number
-}
+}>

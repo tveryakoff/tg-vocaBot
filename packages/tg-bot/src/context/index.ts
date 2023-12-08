@@ -5,7 +5,7 @@ import { Update, UserFromGetMe } from 'grammy/types'
 import { Dialog } from '../dialogs'
 import { SessionData } from './types'
 import { mapTgUserFromToUser } from '../auth/mapTgUserFromToUser'
-import { createDialogInstance } from './constants'
+import { createDialogInstance, DIALOG_NAMES } from './constants'
 import User from '../../../../services/db/models/user'
 
 export class MyContext extends Context {
@@ -59,8 +59,15 @@ export class MyContext extends Context {
     await this.user.populate('dictionaries', ...fields)
   }
 
+  async clearDialogSessionData() {
+    for (const dialogName of DIALOG_NAMES) {
+      delete this.session[dialogName]
+    }
+  }
+
   async enterDialog(dialogName: DialogName, initialState?: DIALOG_STATE[DialogName]) {
     const dialog = createDialogInstance(dialogName, this)
+    await this.clearDialogSessionData()
 
     if (dialog) {
       this.dialog = dialog

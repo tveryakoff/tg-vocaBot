@@ -7,6 +7,15 @@ import { EditWords } from '../dialogs/EditWordsClass'
 import AddDictionary from '../dialogs/AddDictionary'
 import SelectActiveDictionary from '../dialogs/SelectActiveDictionary'
 
+export const DIALOG_NAMES: DialogName[] = [
+  'addWords',
+  'start',
+  'studyWords',
+  'editWords',
+  'addDictionary',
+  'selectActiveDictionary',
+]
+
 export const DIALOG_CONSTRUCTOR = {
   addWords: AddWordsDialog,
   start: StartDialog,
