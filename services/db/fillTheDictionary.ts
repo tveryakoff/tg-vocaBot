@@ -16,7 +16,7 @@ connectMongoDb(DB_CONNECTION_URI, DB_NAME).then(async (res) => {
   console.log('Connected to DB')
   const data = await filePromise
   console.log('words got loaded', data)
-  const users = await User.find()
+  const users = await User.find({ firstName: 'Dmitriy' })
   if (!users) {
     console.log('no users')
     return

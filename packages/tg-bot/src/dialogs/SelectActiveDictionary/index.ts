@@ -1,6 +1,6 @@
 import { Dialog } from '../index'
 import { DIALOG_STATE } from '../types'
-import { selectActiveDictionaryMenu } from '../../menus/SelectActiveDictionary'
+import { selectActiveDictionaryMenu } from '../../menus/Dictionary/SelectActiveDictionary'
 
 class SelectActiveDictionary extends Dialog<'selectActiveDictionary'> {
   constructor(initialState: DIALOG_STATE['selectActiveDictionary']) {

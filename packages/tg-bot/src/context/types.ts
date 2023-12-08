@@ -3,6 +3,7 @@ import { DIALOG_STATE, DialogName } from '../dialogs/types'
 
 export type SessionData = DIALOG_STATE & {
   activeDictionaryId?: string | null
+  editDictionaryId?: string | null
   activeDialogName?: DialogName
 }
 

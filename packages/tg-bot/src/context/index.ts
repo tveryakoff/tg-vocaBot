@@ -30,6 +30,10 @@ export class MyContext extends Context {
     this.session.activeDictionaryId = dictId
   }
 
+  setEditDictionary(dictId: string) {
+    this.session.editDictionaryId = dictId
+  }
+
   async loadDataIntoContext() {
     this.user = await User.createIfNotExits(mapTgUserFromToUser(this.from))
 
@@ -53,10 +57,11 @@ export class MyContext extends Context {
 
   async loadDictionariesNames(fields: Array<keyof Dictionary>) {
     if (this.user.populated('dictionaries')) {
-      return
+      return this.user.dictionaries as DictionaryMongooseHydrated[]
     }
 
     await this.user.populate('dictionaries', ...fields)
+    return this.user.dictionaries as DictionaryMongooseHydrated[]
   }
 
   async clearDialogSessionData() {

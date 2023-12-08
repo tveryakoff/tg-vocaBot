@@ -8,7 +8,9 @@ import { INITIAL_SESSION_STATE } from './context/session'
 import { SessionData } from './context/types'
 import studyTypeMenu from './menus/StudyTypeMenu'
 import editWordMenuType from './menus/EditWord'
-import { selectActiveDictionaryMenu } from './menus/SelectActiveDictionary'
+import { selectActiveDictionaryMenu } from './menus/Dictionary/SelectActiveDictionary'
+import { editActiveDictionaryMenu } from './menus/Dictionary/SelectEditDictionary'
+import { editDictionaryMenu } from './menus/Dictionary/EditDictionary'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -65,7 +67,14 @@ export class TgBot {
   }
 
   setMenus() {
-    this.bot.use(studyTypeMenu, addOrLearnMenu, editWordMenuType, selectActiveDictionaryMenu)
+    this.bot.use(
+      studyTypeMenu,
+      addOrLearnMenu,
+      editWordMenuType,
+      selectActiveDictionaryMenu,
+      editActiveDictionaryMenu,
+      editDictionaryMenu,
+    )
   }
 
   async setCommands() {
@@ -76,6 +85,7 @@ export class TgBot {
       { command: 'editwords', description: 'Edit words' },
       { command: 'createdictionary', description: 'Create a new dictionary (max: 5)' },
       { command: 'selectdictionary', description: 'Select a dictionary to work with' },
+      { command: 'managedictionaries', description: 'Manage your dictionaries' },
     ])
 
     this.bot.command('start', async (ctx) => ctx.enterDialog('start'))
@@ -84,6 +94,7 @@ export class TgBot {
     this.bot.command('editwords', async (ctx) => ctx.enterDialog('editWords'))
     this.bot.command('createdictionary', async (ctx) => ctx.enterDialog('addDictionary'))
     this.bot.command('selectdictionary', async (ctx) => ctx.enterDialog('selectActiveDictionary'))
+    this.bot.command('managedictionaries', async (ctx) => ctx.enterDialog('manageDictionary'))
   }
 
   setUserDialogs() {

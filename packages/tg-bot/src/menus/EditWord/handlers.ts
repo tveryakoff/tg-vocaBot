@@ -2,10 +2,16 @@ import { WordMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
 import { MiddlewareFn } from 'grammy'
 import { EDIT_WORDS_STAGE } from '../../dialogs/types'
+import { MenuControlPanel } from '@grammyjs/menu/out/menu'
 
-export const deleteWord = async (ctx: MyContext, word: WordMongooseHydrated) => {
+export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
   await ctx.activeDictionary.deleteWord(word._id.toString())
-  return await ctx.reply(`Word pair "${word.value}" - "${word.translation}" has been deleted!`)
+  ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
+  ctx.menu.update()
+  if (!ctx.activeDictionary.words.length) {
+    await ctx.reply(`Your dictionary is empty! Let's add some words`)
+    return ctx.enterDialog('addWords')
+  }
 }
 
 export const goToEditWordValue: MiddlewareFn<MyContext> = async (ctx) => {

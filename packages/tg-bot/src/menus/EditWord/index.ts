@@ -4,7 +4,11 @@ import { goToChooseWord, goToEditWordTranslation, goToEditWordValue, deleteWord 
 
 const editWordMenuType = new Menu<MyContext>('editWordMenu')
 editWordMenuType.dynamic(async (ctx, range) => {
-  const { page, stage } = ctx.getDialogContext('editWords')
+  const data = ctx.getDialogContext('editWords')
+  if (!data) {
+    return
+  }
+  const { page, stage } = data
   const { words, total } = await ctx.activeDictionary.getWords({ page })
   for (const word of words) {
     range
@@ -14,26 +18,24 @@ editWordMenuType.dynamic(async (ctx, range) => {
       })
       .text('❌', async (ctx) => {
         await deleteWord(ctx, word)
-        ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
-        return await ctx.enterDialog('editWords')
       })
     range.row()
   }
 
   if (total > 1) {
     const { page, ...rest } = ctx.getDialogContext('editWords')
-    range.text('<', async (ctx) => {
-      if (page > 0) {
-        return await ctx.enterDialog('editWords', { ...rest, page: page - 1 })
-      }
-      return await ctx.reply(`It's already the first page!`)
-    })
-    range.text('>', async (ctx) => {
-      if (page + 1 < total) {
-        return await ctx.enterDialog('editWords', { ...rest, page: page + 1 })
-      }
-      return await ctx.reply(`It's already the last page!`)
-    })
+    if (page > 0) {
+      range.text('<', async (ctx) => {
+        ctx.setDialogContext('editWords', { ...rest, page: page - 1 })
+        return ctx.menu.update()
+      })
+    }
+    if (page + 1 < total) {
+      range.text('>', async (ctx) => {
+        ctx.setDialogContext('editWords', { ...rest, page: page + 1 })
+        return ctx.menu.update()
+      })
+    }
   }
 })
 

@@ -2,7 +2,7 @@ import { Dialog } from '../index'
 import { addOrLearnMenu } from '../../menus/AddOrLearn'
 import { MyContext } from '../../context'
 import { DIALOG_STATE } from '../types'
-import { selectActiveDictionaryMenu } from '../../menus/SelectActiveDictionary'
+import { selectActiveDictionaryMenu } from '../../menus/Dictionary/SelectActiveDictionary'
 
 export class StartDialog extends Dialog {
   constructor(ctx: MyContext) {

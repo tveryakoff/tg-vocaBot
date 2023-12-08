@@ -6,6 +6,7 @@ import { StudyWords } from '../dialogs/StudyWords'
 import { EditWords } from '../dialogs/EditWordsClass'
 import AddDictionary from '../dialogs/AddDictionary'
 import SelectActiveDictionary from '../dialogs/SelectActiveDictionary'
+import ManageDictionary from '../dialogs/ManageDictionary'
 
 export const DIALOG_NAMES: DialogName[] = [
   'addWords',
@@ -14,6 +15,7 @@ export const DIALOG_NAMES: DialogName[] = [
   'editWords',
   'addDictionary',
   'selectActiveDictionary',
+  'manageDictionary',
 ]
 
 export const DIALOG_CONSTRUCTOR = {
@@ -23,6 +25,7 @@ export const DIALOG_CONSTRUCTOR = {
   editWords: EditWords,
   addDictionary: AddDictionary,
   selectActiveDictionary: SelectActiveDictionary,
+  manageDictionary: ManageDictionary,
 }
 
 export const createDialogInstance = (dialogName: DialogName, params: any): Dialog | null => {

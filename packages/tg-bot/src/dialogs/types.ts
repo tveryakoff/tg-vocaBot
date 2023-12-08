@@ -1,6 +1,13 @@
 import { WordMongooseHydrated } from '../../../../types/user'
 
-export type DialogName = 'addWords' | 'studyWords' | 'editWords' | 'start' | 'addDictionary' | 'selectActiveDictionary'
+export type DialogName =
+  | 'addWords'
+  | 'studyWords'
+  | 'editWords'
+  | 'start'
+  | 'addDictionary'
+  | 'selectActiveDictionary'
+  | 'manageDictionary'
 
 export type DIALOG_STATE = Partial<{
   start: null
@@ -9,7 +16,22 @@ export type DIALOG_STATE = Partial<{
   editWords: EDIT_WORDS_STATE
   addDictionary: ADD_DICTIONARY_STATE
   selectActiveDictionary: null
+  manageDictionary: MANAGE_DICTIONARY_STATE
 }>
+
+export type MANAGE_DICTIONARY_STATE = Partial<{
+  stage: MANAGE_DICTIONARY_STAGE
+  editDictId: string
+}>
+
+export enum MANAGE_DICTIONARY_STAGE {
+  DEFAULT = 'default',
+  SELECT_DICT = 'selectDictionary',
+  DELETE_DICT = 'deleteDictionary',
+  DELETE_DICT_CONFIRM = 'deleteDictionaryConfirm',
+  CHANGE_NAME = 'changeName',
+  EDIT_WORDS = 'editWords',
+}
 
 export enum ADD_DICTIONARY_STAGE {
   DEFAULT = 'default',
