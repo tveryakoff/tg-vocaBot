@@ -1,57 +1,32 @@
-import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
-import { goToChooseWord, goToEditWordTranslation, goToEditWordValue, deleteWord } from './handlers'
-import { BotError } from 'grammy'
+import { deleteWord, goBack, goToEditWordTranslation, goToEditWordValue } from './handlers'
+import EditWordMenu from './EditWordMenu'
+import { MenuControlPanel } from '@grammyjs/menu/out/menu'
+import SelectWordOrTranslationSubMenu from './SelectWordOrTranslationSubMenu'
 
-const editWordMenuType = new Menu<MyContext>('editWordMenu')
-editWordMenuType.dynamic(async (ctx, range) => {
-  const data = ctx.getDialogContext('editWords')
-  if (!data) {
-    return
-  }
-  const { page, stage } = data
-  const { words, total } = await ctx.activeDictionary.getWords({ page })
-  for (const word of words) {
-    range
-      .text(`${word.value} - ${word.translation}`, async (ctx) => {
-        ctx.setDialogContext('editWords', { word, page, stage })
-        return ctx.menu.nav('editSelect')
-      })
-      .text('❌', async (ctx) => {
-        await deleteWord(ctx, word)
-      })
-    range.row()
-  }
+const selectWordOrTranslationSubmenuId = 'selectWordOrTranslationSubmenu'
 
-  if (total > 1) {
-    const { page, ...rest } = ctx.getDialogContext('editWords')
-    if (page > 0) {
-      range.text('<', async (ctx) => {
-        ctx.setDialogContext('editWords', { ...rest, page: page - 1 })
-        return ctx.menu.update()
-      })
-    }
-    if (page + 1 < total) {
-      range.text('>', async (ctx) => {
-        ctx.setDialogContext('editWords', { ...rest, page: page + 1 })
-        return ctx.menu.update()
-      })
-    }
-  }
+const editWordsMenu = new EditWordMenu({
+  id: 'editWordsMenu',
+  getData: (ctx) => ctx.getDialogContext('editWords'),
+  setData: (ctx, data) => ctx.setDialogContext('editWords', data),
+  getDictId: (ctx) => ctx.activeDictionary?._id,
+  onDeleteWord: deleteWord,
+  onWordSelect: (ctx: MyContext & { menu: MenuControlPanel }, word) => {
+    const contextData = ctx.getDialogContext('editWords')
+    ctx.setDialogContext('editWords', { ...contextData, word })
+    return ctx.menu.nav(selectWordOrTranslationSubmenuId)
+  },
 })
 
-const editSelect = new Menu<MyContext>('editSelect')
-
-editSelect.dynamic(async (ctx, range) => {
-  const { word } = ctx.getDialogContext('editWords')
-
-  range
-    .text(`${word.value}`, goToEditWordValue)
-    .text(`${word.translation}`, goToEditWordTranslation)
-    .row()
-    .text('Go back', goToChooseWord)
+const selectWordOrTranslationSubMenu = new SelectWordOrTranslationSubMenu({
+  id: selectWordOrTranslationSubmenuId,
+  getData: (ctx) => ctx.getDialogContext('editWords'),
+  gotToEditWordValue: goToEditWordValue,
+  gotToEditWordTranslation: goToEditWordTranslation,
+  goBack: goBack,
 })
 
-editWordMenuType.register(editSelect)
+editWordsMenu.register(selectWordOrTranslationSubMenu)
 
-export default editWordMenuType
+export default editWordsMenu

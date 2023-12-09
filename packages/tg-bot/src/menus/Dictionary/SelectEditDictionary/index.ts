@@ -1,5 +1,4 @@
 import SelectDictionaryMenuFacade from '../SelectDictionaryMenuFacade'
-import { editSelectedDictionarySubmenu } from '../EditDictionary'
 import { MyContext } from '../../../context'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
 
@@ -14,6 +13,8 @@ export const selectEditDictionaryMenu = new SelectDictionaryMenuFacade({
   },
 })
 
-editSelectedDictionarySubmenu.row().text('Go back', (ctx) => ctx.menu.back())
-
-selectEditDictionaryMenu.register(editSelectedDictionarySubmenu)
+// export const editSelectedDictionarySubmenu = new EditDictionaryMenuFacade('editSelectedDictionarySubmenu')
+//
+// editSelectedDictionarySubmenu.row().text('Go back', (ctx) => ctx.menu.back())
+//
+// selectEditDictionaryMenu.register(editSelectedDictionarySubmenu)

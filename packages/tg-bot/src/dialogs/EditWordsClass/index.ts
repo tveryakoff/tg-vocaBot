@@ -25,7 +25,7 @@ export class EditWords extends Dialog<'editWords'> {
 
     this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
 
-    super.start(initialState)
+    await super.start(initialState)
 
     const { stage, word } = this.contextState
 

@@ -2,12 +2,15 @@ import { Dialog } from '../index'
 import { MyContext } from '../../context'
 import { DIALOG_STATE, MANAGE_DICTIONARY_STAGE } from '../types'
 import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
-import { editDictionaryMenu } from '../../menus/Dictionary/EditDictionary'
+import manageDictionaryMenu from '../../menus/Dictionary/ManageDictionary'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
   constructor(ctx: MyContext) {
     super(ctx)
-    this.initialState = null
+    this.initialState = {
+      page: 0,
+      stage: MANAGE_DICTIONARY_STAGE.DEFAULT,
+    }
     this.name = 'manageDictionary'
   }
 
@@ -30,7 +33,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
     if (isInitial && this.ctx.user.dictionaries.length === 1) {
       this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
-      return await this.ctx.reply(`Manage dictionary`, { reply_markup: editDictionaryMenu })
+      return await this.ctx.reply(`Manage dictionary`, { reply_markup: manageDictionaryMenu })
     }
 
     if (isInitial && hasMany) {
@@ -41,7 +44,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     }
 
     if (stage === MANAGE_DICTIONARY_STAGE.SELECT_DICT) {
-      return await this.ctx.reply(`Manage dictionary`, { reply_markup: editDictionaryMenu })
+      return await this.ctx.reply(`Manage dictionary`, { reply_markup: manageDictionaryMenu })
     }
   }
 }

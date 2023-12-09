@@ -24,9 +24,7 @@ export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, wo
   }
 }
 
-export const goToEditWordValue: MiddlewareFn<MyContext> = async (ctx) => {
-  const { page, word } = ctx.getDialogContext('editWords')
-
+export const goToEditWordValue = async (ctx: MyContext, word: WordMongooseHydrated, page = 0) => {
   return ctx.enterDialog('editWords', {
     page: page || 0,
     word: word,
@@ -34,9 +32,7 @@ export const goToEditWordValue: MiddlewareFn<MyContext> = async (ctx) => {
   })
 }
 
-export const goToEditWordTranslation: MiddlewareFn<MyContext> = async (ctx) => {
-  const { page, word } = ctx.getDialogContext('editWords')
-
+export const goToEditWordTranslation = async (ctx: MyContext, word: WordMongooseHydrated, page = 0) => {
   return ctx.enterDialog('editWords', {
     page: page || 0,
     word: word,
@@ -44,7 +40,7 @@ export const goToEditWordTranslation: MiddlewareFn<MyContext> = async (ctx) => {
   })
 }
 
-export const goToChooseWord: MiddlewareFn<MyContext> = async (ctx) => {
+export const goBack = async (ctx: MyContext) => {
   const { page } = ctx.getDialogContext('editWords')
 
   return ctx.enterDialog('editWords', {
