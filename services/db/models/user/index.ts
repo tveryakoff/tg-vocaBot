@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import Dictionary, { DICTIONARY_MODEL_NAME } from '../dictionary'
 import { DictionaryMongooseHydrated, User, UserMethods, UserModel, WordMongooseHydrated } from '../../../../types/user'
+import { async } from 'rxjs'
 
 const USER_MODEL_NAME = 'User'
 
@@ -47,6 +48,23 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
 
         const dict = await Dictionary.findById(dictId)
         return dict
+      },
+
+      updateDictionary: async function (dictInput: DictionaryMongooseHydrated) {
+        await Dictionary.findByIdAndUpdate(dictInput._id, dictInput)
+        this.save()
+      },
+
+      deleteDictionary: async function (dictId) {
+        if (this.dictionaries?.length && this.dictionaries.length <= 1) {
+          return `You can't delete all your dictionaries`
+        }
+        await Dictionary.findByIdAndDelete(dictId)
+        this.dictionaries = (this.dictionaries as DictionaryMongooseHydrated[]).filter(
+          (d) => d._id.toString() !== dictId,
+        )
+        await this.save()
+        return
       },
     },
   },

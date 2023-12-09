@@ -17,8 +17,9 @@ const manageDictionaryMenu = new ManageDictionaryMenu({
     ctx.setDialogContext('manageDictionary', { ...contextData, stage: MANAGE_DICTIONARY_STAGE.EDIT_DICT_WORDS })
     return ctx.menu.nav(editDictionaryWordsSubmenuId)
   },
-  onDictionaryDelete: () => {
-    console.log('delete')
+  onDictionaryDelete: async (ctx) => {
+    await ctx.user.deleteDictionary(ctx.editDictionaryId)
+    ctx.menu.update()
   },
 })
 
