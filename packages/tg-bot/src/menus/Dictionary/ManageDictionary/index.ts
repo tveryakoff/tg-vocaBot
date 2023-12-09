@@ -18,8 +18,8 @@ const manageDictionaryMenu = new ManageDictionaryMenu({
     return ctx.menu.nav(editDictionaryWordsSubmenuId)
   },
   onDictionaryDelete: async (ctx) => {
-    await ctx.user.deleteDictionary(ctx.editDictionaryId)
-    ctx.menu.update()
+    const contextData = ctx.getDialogContext('manageDictionary')
+    return await ctx.enterDialog('manageDictionary', { ...contextData, stage: MANAGE_DICTIONARY_STAGE.DELETE_DICT })
   },
 })
 
@@ -27,7 +27,10 @@ export const editDictionaryWordsSubmenu = new EditWordMenu({
   id: editDictionaryWordsSubmenuId,
   getData: (ctx) => ctx.getDialogContext('manageDictionary'),
   setData: (ctx, data) => ctx.setDialogContext('manageDictionary', data),
-  getDictId: (ctx) => ctx.editDictionaryId,
+  getDictId: (ctx) => {
+    const contextData = ctx.getDialogContext('manageDictionary')
+    return contextData.editDictId
+  },
   onDeleteWord: deleteWord,
   onWordSelect: (ctx, word) => {
     const contextData = ctx.getDialogContext('manageDictionary')

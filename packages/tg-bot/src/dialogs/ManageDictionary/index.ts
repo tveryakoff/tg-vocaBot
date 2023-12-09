@@ -3,7 +3,6 @@ import { MyContext } from '../../context'
 import { DIALOG_STATE, MANAGE_DICTIONARY_STAGE } from '../types'
 import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from '../../menus/Dictionary/ManageDictionary'
-import { INITIAL_DIALOG_STATE } from '../constants'
 import Dictionary from '../../../../../services/db/models/dictionary'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
@@ -14,6 +13,25 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
       stage: MANAGE_DICTIONARY_STAGE.DEFAULT,
     }
     this.name = 'manageDictionary'
+  }
+
+  selectEditDictionaryId() {
+    if (this.contextState.editDictId) {
+      return this.contextState.editDictId
+    }
+    if (this.ctx.user.dictionaries.length === 1 && this.ctx.activeDictionary) {
+      const id = this.ctx.activeDictionary?._id.toString()
+      this.contextState.editDictId = id
+      return id
+    }
+  }
+
+  async getEditDictionary() {
+    if (!this.contextState.editDictId) {
+      return
+    }
+
+    return Dictionary.findById(this.contextState.editDictId)
   }
 
   async start(initialState: DIALOG_STATE['manageDictionary']) {
@@ -29,27 +47,23 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     await super.start(initialState)
 
     const { stage, word } = this.contextState
-
     const isInitial = !stage || stage === MANAGE_DICTIONARY_STAGE.DEFAULT
-    const hasMany = this.ctx.user.dictionaries.length > 1
+    const editDictId = this.selectEditDictionaryId()
 
-    if (isInitial && this.ctx.user.dictionaries.length === 1) {
-      this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
-      return await this.ctx.reply(`Manage dictionary`, { reply_markup: manageDictionaryMenu })
+    if (isInitial && editDictId) {
+      const editDict = await this.getEditDictionary()
+      return await this.ctx.reply(`Manage dictionary ${editDict?.name}`, {
+        reply_markup: manageDictionaryMenu,
+      })
     }
 
-    if (isInitial && hasMany) {
+    if (isInitial && !editDictId) {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.SELECT_DICT
       return await this.ctx.reply(`Select the dictionary you'd like to manage:`, {
         reply_markup: selectEditDictionaryMenu,
       })
     }
 
-    if (stage === MANAGE_DICTIONARY_STAGE.SELECT_DICT) {
-      return await this.ctx.reply(`Manage dictionary`, { reply_markup: manageDictionaryMenu })
-    }
-
-    // TODO ADD GO BACK BUTTON
     if (stage === MANAGE_DICTIONARY_STAGE.EDIT_WORD_VALUE_START) {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.EDIT_WORD_VALUE_FINISH
       return await this.ctx.reply(`Type in a replacement for "${word?.value}"`)
@@ -59,12 +73,20 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.EDIT_WORD_TRANSLATION_FINISH
       return await this.ctx.reply(`Type in a replacement for "${word?.translation}"`)
     }
+
+    if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT) {
+      const dict = await this.getEditDictionary()
+
+      this.contextState.stage = MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM
+      return await this.ctx.reply(
+        `Confirm deleting "${dict.name}" dictionary by typing: "Yes"\n(It will delete "${dict.name}" and all it's words)`,
+      )
+    }
   }
 
   async handleTextInput(): Promise<any> {
-    const { stage, word, page } = this.contextState
-    const dictId = this.ctx.editDictionaryId
-    const dictionary = await Dictionary.findById(dictId)
+    const { stage, word, page, editDictId } = this.contextState
+    const dictionary = await Dictionary.findById(editDictId)
 
     if (!dictionary) {
       return
@@ -106,6 +128,14 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
       this.contextState = { stage: MANAGE_DICTIONARY_STAGE.DEFAULT, page }
       return this.ctx.reply(`Editing ${dictionary.name} words:`, { reply_markup: editDictionaryWordsSubmenu })
+    }
+
+    if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM && textInput.trim().toLowerCase() === 'yes') {
+      await this.ctx.deleteDictionary(editDictId)
+      await this.ctx.reply(`Dictionary "${dictionary.name}" has been deleted`)
+      return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionary?._id })
+    } else if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM) {
+      return await this.ctx.enterDialog('manageDictionary')
     }
   }
 }

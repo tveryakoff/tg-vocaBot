@@ -26,16 +26,27 @@ export class MyContext extends Context {
     this.session[name] = { ...context }
   }
 
-  setActiveDictionary(dictId: string) {
+  async setActiveDictionary(dictId: string) {
     this.session.activeDictionaryId = dictId
+    this.activeDictionary = await this.user.getDictionary(this.session.activeDictionaryId)
   }
 
-  setEditDictionary(dictId: string) {
-    this.session.editDictionaryId = dictId.toString()
-  }
+  async deleteDictionary(deleteDictId: string) {
+    const canDelete = this.user.dictionaries.length > 1
+    if (!canDelete) {
+      return
+    }
 
-  get editDictionaryId() {
-    return this.session.editDictionaryId
+    const isActive = deleteDictId === this.session.activeDictionaryId
+
+    this.user = await this.user.deleteDictionary(deleteDictId)
+    const dictId = (this.user.dictionaries as DictionaryMongooseHydrated[])[0]._id.toString()
+
+    if (isActive) {
+      await this.setActiveDictionary(dictId)
+    }
+
+    return
   }
 
   async loadDataIntoContext() {
@@ -46,7 +57,7 @@ export class MyContext extends Context {
     }
 
     if (this.session.activeDictionaryId) {
-      this.activeDictionary = await this.user.getDictionary(this.session.activeDictionaryId)
+      await this.setActiveDictionary(this.session.activeDictionaryId)
     }
 
     const activeDialogName = this?.session?.activeDialogName

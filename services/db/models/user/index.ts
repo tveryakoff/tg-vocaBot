@@ -64,7 +64,7 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
           (d) => d._id.toString() !== dictId,
         )
         await this.save()
-        return
+        return this
       },
     },
   },

@@ -5,7 +5,8 @@ import Dictionary from '../../../../../../services/db/models/dictionary'
 
 export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
   const wordId = word._id.toString()
-  const dictionary = await Dictionary.findById(ctx.editDictionaryId)
+  const { editDictId } = ctx.getDialogContext('manageDictionary')
+  const dictionary = await Dictionary.findById(editDictId)
   if (!dictionary) {
     return
   }

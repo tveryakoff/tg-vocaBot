@@ -52,7 +52,7 @@ export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
   getDictionary: (dictId: string) => Promise<DictionaryMongooseHydrated>
   updateDictionary: (dictData: DictionaryMongooseHydrated) => Promise<DictionaryMongooseHydrated>
-  deleteDictionary: (dictId: string) => Promise<any>
+  deleteDictionary: (dictId: string) => Promise<UserMongooseHydrated>
 }
 
 export type DictionaryMethods = {
