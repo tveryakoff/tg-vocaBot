@@ -10,7 +10,8 @@ const selectDictionaryWordOrTranslationSubmenuId = 'selectDictionaryWordOrTransl
 const manageDictionaryMenu = new ManageDictionaryMenu({
   id: 'manageDictionaryMenu',
   onChangeName: (ctx) => {
-    console.log('change name')
+    const contextData = ctx.getDialogContext('manageDictionary')
+    return ctx.enterDialog('manageDictionary', { ...contextData, stage: MANAGE_DICTIONARY_STAGE.CHANGE_NAME_START })
   },
   onEditWords: (ctx) => {
     const contextData = ctx.getDialogContext('manageDictionary')

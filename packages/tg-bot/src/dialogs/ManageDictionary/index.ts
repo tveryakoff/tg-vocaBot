@@ -4,6 +4,7 @@ import { DIALOG_STATE, MANAGE_DICTIONARY_STAGE } from '../types'
 import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from '../../menus/Dictionary/ManageDictionary'
 import Dictionary from '../../../../../services/db/models/dictionary'
+import { DictionaryMongooseHydrated } from '../../../../../types/user'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
   constructor(ctx: MyContext) {
@@ -26,9 +27,9 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     }
   }
 
-  async getEditDictionary() {
+  async getEditDictionary(): Promise<DictionaryMongooseHydrated | null> {
     if (!this.contextState.editDictId) {
-      return
+      return null
     }
 
     return Dictionary.findById(this.contextState.editDictId)
@@ -81,6 +82,17 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
       return await this.ctx.reply(
         `Confirm deleting "${dict.name}" dictionary by typing: "Yes"\n(It will delete "${dict.name}" and all it's words)`,
       )
+    }
+
+    if (stage === MANAGE_DICTIONARY_STAGE.CHANGE_NAME_START) {
+      const dict = await this.getEditDictionary()
+      if (!dict) {
+        return
+      }
+
+      this.contextState.stage = MANAGE_DICTIONARY_STAGE.CHANGE_NAME_FINISH
+
+      await this.ctx.reply(`Type in a replacement for ${dict.name}`)
     }
   }
 
@@ -135,6 +147,25 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
       await this.ctx.reply(`Dictionary "${dictionary.name}" has been deleted`)
       return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionary?._id })
     } else if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM) {
+      return await this.ctx.enterDialog('manageDictionary')
+    }
+
+    if (stage === MANAGE_DICTIONARY_STAGE.CHANGE_NAME_FINISH) {
+      const textInput = this.ctx.message.text
+      if (!textInput) {
+        await this.ctx.reply(`A dictionary name can't be empty`)
+        return await this.ctx.enterDialog('manageDictionary', {
+          ...this.contextState,
+          stage: MANAGE_DICTIONARY_STAGE.CHANGE_NAME_START,
+        })
+      }
+
+      const dict = await this.getEditDictionary()
+
+      //@ts-ignore
+      await this.ctx.user.updateDictionary({ ...dict, name: textInput.trim() })
+      await this.ctx.reply(`The dictionary has been renamed!`)
+
       return await this.ctx.enterDialog('manageDictionary')
     }
   }

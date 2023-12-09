@@ -51,7 +51,7 @@ export type EditWordInput = Partial<WordMongooseHydrated>
 export type UserMethods = {
   createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
   getDictionary: (dictId: string) => Promise<DictionaryMongooseHydrated>
-  updateDictionary: (dictData: DictionaryMongooseHydrated) => Promise<DictionaryMongooseHydrated>
+  updateDictionary: (dictData: Dictionary) => Promise<DictionaryMongooseHydrated>
   deleteDictionary: (dictId: string) => Promise<UserMongooseHydrated>
 }
 

@@ -37,7 +37,8 @@ export enum MANAGE_DICTIONARY_STAGE {
   EDIT_WORD_TRANSLATION_FINISH = 'editWordTranslationFinish',
   DELETE_DICT = 'deleteDictionary',
   DELETE_DICT_CONFIRM = 'deleteDictionaryConfirm',
-  CHANGE_NAME = 'changeName',
+  CHANGE_NAME_START = 'changeNameStart',
+  CHANGE_NAME_FINISH = 'changeNameFinish',
 }
 
 export enum ADD_DICTIONARY_STAGE {
