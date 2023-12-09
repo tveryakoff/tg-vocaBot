@@ -10,7 +10,7 @@ import studyTypeMenu from './menus/StudyTypeMenu'
 import editWordMenuType from './menus/EditWord'
 import { selectActiveDictionaryMenu } from './menus/Dictionary/SelectActiveDictionary'
 import { selectEditDictionaryMenu } from './menus/Dictionary/SelectEditDictionary'
-import manageDictionaryMenu from './menus/Dictionary/ManageDictionary'
+import manageDictionaryMenu, { editDictionaryWordsSubmenu } from './menus/Dictionary/ManageDictionary'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -81,6 +81,7 @@ export class TgBot {
       editWordMenuType,
       selectActiveDictionaryMenu,
       selectEditDictionaryMenu,
+      editDictionaryWordsSubmenu,
       manageDictionaryMenu,
     )
   }

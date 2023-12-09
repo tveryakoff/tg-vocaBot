@@ -1,7 +1,7 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
-import { goToEditWordTranslation, goToEditWordValue } from './handlers'
 import { WordMongooseHydrated } from '../../../../../types/user'
+import { MenuControlPanel } from '@grammyjs/menu/out/menu'
 
 type Data = {
   word?: WordMongooseHydrated
@@ -12,7 +12,7 @@ export type Options = {
   getData: (ctx: MyContext) => Data
   gotToEditWordValue: (ctx: MyContext, word?: WordMongooseHydrated) => unknown
   gotToEditWordTranslation: (ctx: MyContext, word?: WordMongooseHydrated) => unknown
-  goBack: (ctx: MyContext) => unknown
+  goBack: (ctx: MyContext & { menu: MenuControlPanel }) => unknown
 }
 
 export default class SelectWordOrTranslationSubMenu extends Menu<MyContext> {
@@ -21,6 +21,10 @@ export default class SelectWordOrTranslationSubMenu extends Menu<MyContext> {
 
     this.dynamic(async (ctx, range) => {
       const { word } = getData(ctx)
+
+      if (!word) {
+        return
+      }
 
       range
         .text(`${word.value}`, (ctx) => gotToEditWordValue(ctx, word))

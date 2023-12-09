@@ -30,10 +30,14 @@ export type MANAGE_DICTIONARY_STATE = Partial<{
 export enum MANAGE_DICTIONARY_STAGE {
   DEFAULT = 'default',
   SELECT_DICT = 'selectDictionary',
+  EDIT_DICT_WORDS = 'editDIctWords',
+  EDIT_WORD_VALUE_START = 'editWordValueStart',
+  EDIT_WORD_VALUE_FINISH = 'editWordValueFinish',
+  EDIT_WORD_TRANSLATION_START = 'editWordTranslationStart',
+  EDIT_WORD_TRANSLATION_FINISH = 'editWordTranslationFinish',
   DELETE_DICT = 'deleteDictionary',
   DELETE_DICT_CONFIRM = 'deleteDictionaryConfirm',
   CHANGE_NAME = 'changeName',
-  EDIT_WORDS = 'editWords',
 }
 
 export enum ADD_DICTIONARY_STAGE {

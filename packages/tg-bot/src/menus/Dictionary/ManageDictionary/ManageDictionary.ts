@@ -13,13 +13,22 @@ export default class ManageDictionaryMenu extends Menu<MyContext> {
   constructor({ id, onChangeName, onEditWords, onDictionaryDelete }: Options) {
     super(id)
 
-    this.text('Change name', (ctx) => onChangeName(ctx))
-      .row()
-      .text('Edit words', async (ctx) => {
-        onEditWords(ctx)
-      })
-      .row()
-      .text('Delete', (ctx) => onDictionaryDelete(ctx))
-      .row()
+    this.dynamic((ctx, range) => {
+      range
+        .text('Change name', (ctx) => onChangeName(ctx))
+        .row()
+        .text('Edit words', async (ctx) => {
+          onEditWords(ctx)
+        })
+        .row()
+        .text('Delete', (ctx) => onDictionaryDelete(ctx))
+        .row()
+
+      if (ctx.user.dictionaries.length > 1) {
+        range.back('Go back')
+      }
+
+      return range
+    })
   }
 }
