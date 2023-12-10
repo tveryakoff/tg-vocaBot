@@ -3,6 +3,7 @@ import { MyContext } from '../../context'
 import { INITIAL_DIALOG_STATE } from '../constants'
 import { DIALOG_STATE, TRAIN_WORDS_STAGE } from '../types'
 import studyTypeMenu from '../../menus/StudyTypeMenu'
+import { showContextHint } from '../../menus/ShowContextHint'
 
 export class StudyWords extends Dialog<'studyWords'> {
   constructor(ctx: MyContext) {
@@ -40,10 +41,14 @@ export class StudyWords extends Dialog<'studyWords'> {
         type: this.contextState.type,
         stage: TRAIN_WORDS_STAGE.CHECK_WORD,
         word: word.value,
+        context: word.context,
       }
 
       const opposite = this.contextState.type === 'word' ? word.translation : word.value
-      return await this.ctx.reply(`Type in the translation for "<b>${opposite}</b>":`, { parse_mode: 'HTML' })
+      return await this.ctx.reply(`Type in the translation for "<b>${opposite}</b>":`, {
+        parse_mode: 'HTML',
+        reply_markup: showContextHint,
+      })
     }
   }
 

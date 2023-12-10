@@ -76,6 +76,8 @@ export type TRAIN_WORDS_STATE = Partial<{
   stage: TRAIN_WORDS_STAGE
   type?: 'word' | 'translation'
   word?: string
+  context?: string
+  hintShown?: boolean
 }>
 
 export enum EDIT_WORDS_STAGE {
