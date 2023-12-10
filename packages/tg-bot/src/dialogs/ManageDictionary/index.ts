@@ -147,6 +147,7 @@ ${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
       await this.ctx.reply(`Dictionary "<b>${dictionary.name}</b>" has been deleted`, { parse_mode: 'HTML' })
       return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionaryId })
     } else if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM) {
+      await this.ctx.reply(`Deleting was canceled`)
       return await this.ctx.enterDialog('manageDictionary')
     }
 

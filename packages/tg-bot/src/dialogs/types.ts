@@ -54,11 +54,15 @@ export enum ADD_WORDS_STAGE {
   DEFAULT = 'default',
   WORD = 'word',
   TRANSLATION = 'translation',
+  CONTEXT = 'context',
 }
 
 export type ADD_WORDS_STATE = Partial<{
   stage: ADD_WORDS_STAGE
   word?: string
+  translation?: string
+  context?: string
+  skipped?: boolean
 }>
 
 export enum TRAIN_WORDS_STAGE {

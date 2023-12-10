@@ -11,6 +11,7 @@ import editWordMenuType from './menus/EditWord'
 import { selectActiveDictionaryMenu } from './menus/Dictionary/SelectActiveDictionary'
 import { selectEditDictionaryMenu } from './menus/Dictionary/SelectEditDictionary'
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from './menus/Dictionary/ManageDictionary'
+import skipContextMenu from './menus/SkipContextMenu'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
@@ -83,6 +84,7 @@ export class TgBot {
       selectEditDictionaryMenu,
       editDictionaryWordsSubmenu,
       manageDictionaryMenu,
+      skipContextMenu,
     )
   }
 

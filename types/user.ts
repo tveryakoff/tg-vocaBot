@@ -3,6 +3,7 @@ import { HydratedDocument, Model, PopulatedDoc } from 'mongoose'
 export type Word = {
   value: string
   translation: string
+  context?: string
   transcription?: string
   lastTrained?: string
   createdAt?: string
