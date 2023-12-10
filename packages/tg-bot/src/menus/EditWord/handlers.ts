@@ -1,23 +1,27 @@
 import { WordMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
-import { MiddlewareFn } from 'grammy'
 import { EDIT_WORDS_STAGE } from '../../dialogs/types'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
 
 export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
   try {
     const wordId = word._id.toString()
-    const contextData = ctx.getDialogContext('editWords')
+    await ctx.activeDictionary.deleteWord(wordId)
 
-    if (contextData.deletingWordId) {
-      return
+    const contextData = ctx.getDialogContext('editWords')
+    ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
+
+    const { total } = await ctx.activeDictionary.getWords({ page: contextData.page })
+
+    if (total === 0) {
+      await ctx.reply(`Your dictionary's empty, add some vocab`)
+      return ctx.enterDialog('addWords')
     }
 
-    const deleteWordPromise = ctx.activeDictionary.deleteWord(wordId)
-    ctx.setDialogContext('editWords', { ...contextData, deletingWordId: wordId })
-    await deleteWordPromise
-    ctx.setDialogContext('editWords', { ...contextData, deletingWordId: undefined })
-    ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
+    if (total <= contextData.page) {
+      ctx.setDialogContext('editWords', { ...contextData, page: contextData.page - 1 })
+    }
+
     await ctx.menu.update()
   } catch (e) {
     console.log('e')
