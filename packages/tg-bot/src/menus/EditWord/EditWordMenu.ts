@@ -35,7 +35,7 @@ export default class EditWordMenu extends Menu<MyContext> {
             return await onWordSelect(ctx, word)
           })
           .text('❌', async (ctx) => {
-            return await onDeleteWord(ctx, word)
+            await onDeleteWord(ctx, word)
           })
         range.row()
       }

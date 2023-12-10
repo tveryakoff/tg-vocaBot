@@ -9,13 +9,10 @@ export const selectEditDictionaryMenu = new SelectDictionaryMenuFacade({
     return await ctx.loadDictionariesNames(['name'])
   },
   onSelect: async (ctx: MyContext & { menu: MenuControlPanel }, dict) => {
-    ctx.setEditDictionary(dict?._id.toString())
+    const contextData = ctx.getDialogContext('manageDictionary')
+    ctx.setDialogContext('manageDictionary', { ...contextData, page: 0, editDictId: dict?._id.toString() })
     ctx.menu.nav('manageDictionaryMenu')
   },
 })
 
-// export const editSelectedDictionarySubmenu = new EditDictionaryMenuFacade('editSelectedDictionarySubmenu')
-//
-
-//
 selectEditDictionaryMenu.register(manageDictionarySubMenu)

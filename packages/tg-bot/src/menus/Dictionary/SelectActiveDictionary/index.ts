@@ -8,6 +8,9 @@ export const selectActiveDictionaryMenu = new SelectDictionaryMenuFacade({
   },
   onSelect: async (ctx, dict) => {
     ctx.setActiveDictionary(dict?._id.toString())
-    return await ctx.reply(`You have set ${dict.name} as your active dictionary!`, { reply_markup: addOrLearnMenu })
+    return await ctx.reply(`You have set "<b>${dict.name}</b>" as your active dictionary!`, {
+      parse_mode: 'HTML',
+      reply_markup: addOrLearnMenu,
+    })
   },
 })

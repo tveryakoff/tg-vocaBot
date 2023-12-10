@@ -45,7 +45,7 @@ export const dictionarySchema = new Schema<Dictionary & DictionaryMethods>(
           }
         }
       },
-      addWord: async function ({ value: valueRaw, translation: translationRaw, transcription, mark }) {
+      addWord: async function ({ value: valueRaw, translation: translationRaw, context, transcription, mark }) {
         const value = valueRaw.trim().toLowerCase()
         const translation = translationRaw.trim().toLowerCase()
 
@@ -60,6 +60,7 @@ export const dictionarySchema = new Schema<Dictionary & DictionaryMethods>(
         this.words.push({
           value,
           translation,
+          context,
           transcription,
           mark,
         })

@@ -37,7 +37,8 @@ export enum MANAGE_DICTIONARY_STAGE {
   EDIT_WORD_TRANSLATION_FINISH = 'editWordTranslationFinish',
   DELETE_DICT = 'deleteDictionary',
   DELETE_DICT_CONFIRM = 'deleteDictionaryConfirm',
-  CHANGE_NAME = 'changeName',
+  CHANGE_NAME_START = 'changeNameStart',
+  CHANGE_NAME_FINISH = 'changeNameFinish',
 }
 
 export enum ADD_DICTIONARY_STAGE {
@@ -53,11 +54,15 @@ export enum ADD_WORDS_STAGE {
   DEFAULT = 'default',
   WORD = 'word',
   TRANSLATION = 'translation',
+  CONTEXT = 'context',
 }
 
 export type ADD_WORDS_STATE = Partial<{
   stage: ADD_WORDS_STAGE
   word?: string
+  translation?: string
+  context?: string
+  skipped?: boolean
 }>
 
 export enum TRAIN_WORDS_STAGE {
@@ -71,6 +76,8 @@ export type TRAIN_WORDS_STATE = Partial<{
   stage: TRAIN_WORDS_STAGE
   type?: 'word' | 'translation'
   word?: string
+  context?: string
+  hintShown?: boolean
 }>
 
 export enum EDIT_WORDS_STAGE {

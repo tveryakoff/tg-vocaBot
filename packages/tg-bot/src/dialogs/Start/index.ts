@@ -17,15 +17,15 @@ export class StartDialog extends Dialog {
     const dictionaries = this.ctx.user.dictionaries
 
     if (!dictionaries?.length) {
-      const dict = await this.ctx.user.createDictionary({
+      const { dictionary } = await this.ctx.user.createDictionary({
         name: 'Default dictionary',
         words: [],
       })
       await this.ctx.reply(
         `Welcome ${this.ctx?.from?.username}! \nI've just created your first dictionary, go ahead and add some vocab in it!`,
       )
-      this.ctx.session.activeDictionaryId = dict._id.toString()
-      this.ctx.activeDictionary = dict
+      this.ctx.session.activeDictionaryId = dictionary._id.toString()
+      this.ctx.activeDictionary = dictionary
       return this.enterDialog('addWords')
     }
     if (dictionaries.length === 1) {

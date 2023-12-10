@@ -3,6 +3,7 @@ import { HydratedDocument, Model, PopulatedDoc } from 'mongoose'
 export type Word = {
   value: string
   translation: string
+  context?: string
   transcription?: string
   lastTrained?: string
   createdAt?: string
@@ -49,10 +50,12 @@ export type CheckWordResponse = { isCorrect: boolean; correctAnswer: string }
 export type EditWordInput = Partial<WordMongooseHydrated>
 
 export type UserMethods = {
-  createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
+  createDictionary: (
+    dictInput: Dictionary,
+  ) => Promise<{ dictionary?: DictionaryMongooseHydrated; error?: { message: string } }>
   getDictionary: (dictId: string) => Promise<DictionaryMongooseHydrated>
-  updateDictionary: (dictData: DictionaryMongooseHydrated) => Promise<DictionaryMongooseHydrated>
-  deleteDictionary: (dictId: string) => Promise<any>
+  updateDictionary: (dictData: Dictionary) => Promise<DictionaryMongooseHydrated>
+  deleteDictionary: (dictId: string) => Promise<UserMongooseHydrated>
 }
 
 export type DictionaryMethods = {

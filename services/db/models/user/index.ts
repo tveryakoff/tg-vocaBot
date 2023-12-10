@@ -34,11 +34,27 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
   {
     methods: {
       createDictionary: async function (dictionaryInput) {
+        await this.populate('dictionaries', ['name'])
+        if (
+          this.dictionaries.find(
+            (d: DictionaryMongooseHydrated) =>
+              d.name.trim().toLowerCase() === dictionaryInput.name.trim().toLowerCase(),
+          )
+        ) {
+          return {
+            error: {
+              message: `Dictionary with that name already exists`,
+            },
+          }
+        }
         const dict = new Dictionary(dictionaryInput)
         await dict.save()
         this.dictionaries.push(dict.id)
         await this.save()
-        return dict
+        return {
+          dictionary: dict,
+          error: null,
+        }
       },
 
       getDictionary: async function (dictId) {
@@ -50,8 +66,9 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
         return dict
       },
 
-      updateDictionary: async function (dictInput: DictionaryMongooseHydrated) {
-        await Dictionary.findByIdAndUpdate(dictInput._id, dictInput)
+      updateDictionary: async function (dictInput) {
+        const { _id, ...rest } = dictInput
+        await Dictionary.findByIdAndUpdate(_id.toString(), rest)
         this.save()
       },
 
@@ -64,13 +81,13 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
           (d) => d._id.toString() !== dictId,
         )
         await this.save()
-        return
+        return this
       },
     },
   },
 )
 
-userSchema.static('createIfNotExits', async function (userInput, dictId) {
+userSchema.static('createIfNotExits', async function (userInput) {
   const user = await this.findOne({ tgId: userInput.tgId })
   if (user) {
     return user

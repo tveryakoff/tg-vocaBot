@@ -1,13 +1,35 @@
 import { Dialog } from '../index'
 import { MyContext } from '../../context'
 import { ADD_WORDS_STAGE, DIALOG_STATE } from '../types'
+import { wordPairHasBeenAdded } from '../../utils'
+import skipContextMenu from '../../menus/SkipContextMenu'
+import { INITIAL_DIALOG_STATE } from '../constants'
 
-export class AddWordsDialog extends Dialog {
+export class AddWordsDialog extends Dialog<'addWords'> {
   constructor(ctx: MyContext) {
     super(ctx)
     this.ctx = ctx
     this.name = 'addWords'
-    this.initialState = { stage: ADD_WORDS_STAGE.DEFAULT, word: null }
+    this.initialState = { stage: ADD_WORDS_STAGE.DEFAULT, word: null, translation: null, context: null }
+  }
+
+  async saveWord() {
+    const { word: value, translation, context } = this.contextState
+    const activeDictionary = this.ctx.activeDictionary
+
+    const { justAdded, message } = await activeDictionary.addWord({
+      value,
+      translation: translation || '',
+      context,
+    })
+
+    this.contextState = { ...INITIAL_DIALOG_STATE['addWords'], stage: ADD_WORDS_STAGE.WORD }
+
+    if (justAdded) {
+      return await this.ctx.reply(...wordPairHasBeenAdded(justAdded, activeDictionary.name))
+    } else {
+      return await this.ctx.reply(`${message ? message : 'An error occurred during adding word, try again later'}`)
+    }
   }
 
   async start(initialState?: DIALOG_STATE['addWords']) {
@@ -26,6 +48,10 @@ export class AddWordsDialog extends Dialog {
       this.contextState = { stage: ADD_WORDS_STAGE.WORD }
       return await this.ctx.reply(`Type in a word which you'd like to add:`)
     }
+
+    if (stage === ADD_WORDS_STAGE.CONTEXT) {
+      return await this.saveWord()
+    }
   }
 
   async handleTextInput() {
@@ -42,12 +68,15 @@ export class AddWordsDialog extends Dialog {
 
       if (await activeDictionary.hasWord(wordValue)) {
         return await this.ctx.reply(
-          `"${wordValue.toLowerCase().trim()}" already exists in that dictionary, try to add another word:`,
+          `"<b>${wordValue.toLowerCase().trim()}</b>" already exists in that dictionary, try to add another word:`,
+          { parse_mode: 'HTML' },
         )
       }
       this.contextState = { stage: ADD_WORDS_STAGE.TRANSLATION, word: this.ctx.message?.text }
 
-      return await this.ctx.reply(`Type in a translation for ${this.ctx.message?.text}`)
+      return await this.ctx.reply(`Type in a translation for "<b>${this.ctx.message?.text}</b>"`, {
+        parse_mode: 'HTML',
+      })
     } else if (stage === ADD_WORDS_STAGE.TRANSLATION) {
       const translation = this.ctx.message?.text
 
@@ -59,29 +88,30 @@ export class AddWordsDialog extends Dialog {
       }
 
       if (await activeDictionary.hasWord(state.word, translation)) {
+        const translationLowercased = translation.toLowerCase().trim()
         return await this.ctx.reply(
-          `Translation "${translation
-            .toLowerCase()
-            .trim()}" already exists in that dictionary!\n\nAdd another translation for "${state.word}":`,
+          `Translation "<b>${translationLowercased}</b>" already exists in that dictionary!
+Add another translation for "<b>${state.word}</b>":`,
+          { parse_mode: 'HTML' },
         )
       }
 
-      const value = state.word
+      if (!this.contextState.skipped) {
+        this.contextState.stage = ADD_WORDS_STAGE.CONTEXT
+        this.contextState.translation = translation
 
-      const { justAdded, message } = await activeDictionary.addWord({
-        value,
-        translation: translation || '',
-      })
-
-      this.contextState = { stage: ADD_WORDS_STAGE.WORD, word: null }
-
-      if (justAdded) {
-        return await this.ctx.reply(
-          `A new pair ${justAdded.value} - ${justAdded.translation} has been added to ${activeDictionary.name}!\n\nEnter a new word:`,
-        )
+        return await this.ctx.reply(`Add the word's context (You can later use it as a hint)`, {
+          parse_mode: 'HTML',
+          reply_markup: skipContextMenu,
+        })
       } else {
-        return await this.ctx.reply(`${message ? message : 'An error occurred during adding word, try again later'}`)
+        return await this.saveWord()
       }
+    }
+
+    if (stage === ADD_WORDS_STAGE.CONTEXT) {
+      this.contextState.context = this.ctx.message?.text
+      return await this.saveWord()
     }
   }
 }

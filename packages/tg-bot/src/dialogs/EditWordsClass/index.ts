@@ -3,6 +3,7 @@ import { MyContext } from '../../context'
 import { INITIAL_DIALOG_STATE } from '../constants'
 import { DIALOG_STATE, EDIT_WORDS_STAGE } from '../types'
 import editWordMenuType from '../../menus/EditWord'
+import { wordPairHasBeenReplaced } from '../../utils'
 
 export class EditWords extends Dialog<'editWords'> {
   constructor(ctx: MyContext) {
@@ -22,8 +23,6 @@ export class EditWords extends Dialog<'editWords'> {
       await this.ctx.reply(`Your dictionary is empty! Try adding some vocab instead`)
       return this.enterDialog('addWords')
     }
-
-    this.ctx.setEditDictionary(this.ctx.activeDictionary?._id)
 
     await super.start(initialState)
 
@@ -56,10 +55,7 @@ export class EditWords extends Dialog<'editWords'> {
         value: wordValueInput,
       })
 
-      await this.ctx.reply(
-        `Pair "${word.value}" - "${word.translation}" \n\nHas been replaced with:\n\n"${editedWord.value}" - "${editedWord.translation}"
-      `,
-      )
+      await this.ctx.reply(...wordPairHasBeenReplaced(word, editedWord))
 
       return this.start({ ...INITIAL_DIALOG_STATE.editWords, page: page || 0 })
     }
@@ -72,11 +68,7 @@ export class EditWords extends Dialog<'editWords'> {
         translation: wordTranslationInput,
       })
 
-      await this.ctx.reply(
-        `Pair "${word.value}" - ${word.translation} \n\nHas been replaced with:\n\n
-      "${editedWord.value}" - "${editedWord.translation}"
-      `,
-      )
+      await this.ctx.reply(...wordPairHasBeenReplaced(word, editedWord))
 
       return this.start({ ...INITIAL_DIALOG_STATE.editWords, page: page || 0 })
     }

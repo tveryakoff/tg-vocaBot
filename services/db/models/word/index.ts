@@ -2,8 +2,6 @@ import mongoose from 'mongoose'
 import { Word } from '../../../../types/user'
 const { Schema } = mongoose
 
-export const WORD_MODEL_NAME = 'Word'
-
 export const wordSchema = new Schema<Word>(
   {
     value: {
@@ -13,6 +11,11 @@ export const wordSchema = new Schema<Word>(
     translation: {
       type: String,
       required: true,
+    },
+
+    context: {
+      type: String,
+      required: false,
     },
     transcription: {
       type: String,
