@@ -1,2 +1,2 @@
-**Check out the bot:
-t.me/StudyVocabot
+**Check out the bot**: (https://t.me/StudyVocabot)
+
