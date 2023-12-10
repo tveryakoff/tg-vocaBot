@@ -153,7 +153,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     if (stage === MANAGE_DICTIONARY_STAGE.CHANGE_NAME_FINISH) {
       const textInput = this.ctx.message.text
       if (!textInput) {
-        await this.ctx.reply(`A dictionary name can't be empty`)
+        await this.ctx.reply(`A dictionary's name can't be empty`)
         return await this.ctx.enterDialog('manageDictionary', {
           ...this.contextState,
           stage: MANAGE_DICTIONARY_STAGE.CHANGE_NAME_START,
@@ -163,7 +163,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
       const dict = await this.getEditDictionary()
 
       //@ts-ignore
-      await this.ctx.user.updateDictionary({ ...dict, name: textInput.trim() })
+      await this.ctx.user.updateDictionary({ ...dict._doc, name: textInput.trim() })
       await this.ctx.reply(`The dictionary has been renamed!`)
 
       return await this.ctx.enterDialog('manageDictionary')

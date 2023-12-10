@@ -14,7 +14,6 @@ export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, wo
 
   const { total } = await dictionary.getWords({ page })
 
-
   if (total === 0) {
     await ctx.reply(`Your dictionary's empty`)
     return ctx.enterDialog('manageDictionary')

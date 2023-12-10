@@ -50,8 +50,8 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
         return dict
       },
 
-      updateDictionary: async function (dictInput: { _doc: DictionaryMongooseHydrated }) {
-        const { _id, ...rest } = dictInput?._doc
+      updateDictionary: async function (dictInput) {
+        const { _id, ...rest } = dictInput
         await Dictionary.findByIdAndUpdate(_id.toString(), rest)
         this.save()
       },
