@@ -43,7 +43,7 @@ export class StudyWords extends Dialog<'studyWords'> {
       }
 
       const opposite = this.contextState.type === 'word' ? word.translation : word.value
-      return await this.ctx.reply(`Type in the translation for "${opposite}":`)
+      return await this.ctx.reply(`Type in the translation for "<b>${opposite}</b>":`, { parse_mode: 'HTML' })
     }
   }
 
@@ -60,14 +60,14 @@ export class StudyWords extends Dialog<'studyWords'> {
       })
 
       if (isCorrect) {
-        await this.ctx.reply(`Correct!`)
+        await this.ctx.reply(`😎 Correct!`)
         return this.enterDialog(this.name, {
           type,
           stage: TRAIN_WORDS_STAGE.GET_WORD,
           word: null,
         })
       } else {
-        await this.ctx.reply(`Nope, the correct answer would be "${correctAnswer}"`)
+        await this.ctx.reply(`🙅‍♂️ Nope, the correct answer would be "<b>${correctAnswer}</b>"`, { parse_mode: 'HTML' })
         return this.enterDialog(this.name, {
           type,
           stage: TRAIN_WORDS_STAGE.GET_WORD,

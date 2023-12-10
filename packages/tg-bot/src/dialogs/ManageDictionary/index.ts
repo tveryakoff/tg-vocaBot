@@ -5,6 +5,7 @@ import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDicti
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from '../../menus/Dictionary/ManageDictionary'
 import Dictionary from '../../../../../services/db/models/dictionary'
 import { DictionaryMongooseHydrated } from '../../../../../types/user'
+import { typeInReplacementFor, wordPairHasBeenReplaced } from '../../utils'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
   constructor(ctx: MyContext) {
@@ -53,7 +54,8 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
     if (isInitial && editDictId) {
       const editDict = await this.getEditDictionary()
-      return await this.ctx.reply(`Manage dictionary ${editDict?.name}`, {
+      return await this.ctx.reply(`Managing dictionary "<b>${editDict?.name}</b>"`, {
+        parse_mode: 'HTML',
         reply_markup: manageDictionaryMenu,
       })
     }
@@ -67,12 +69,12 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
     if (stage === MANAGE_DICTIONARY_STAGE.EDIT_WORD_VALUE_START) {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.EDIT_WORD_VALUE_FINISH
-      return await this.ctx.reply(`Type in a replacement for "${word?.value}"`)
+      return await this.ctx.reply(...typeInReplacementFor(word.value))
     }
 
     if (stage === MANAGE_DICTIONARY_STAGE.EDIT_WORD_TRANSLATION_START) {
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.EDIT_WORD_TRANSLATION_FINISH
-      return await this.ctx.reply(`Type in a replacement for "${word?.translation}"`)
+      return await this.ctx.reply(...typeInReplacementFor(word.translation))
     }
 
     if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT) {
@@ -80,7 +82,9 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM
       return await this.ctx.reply(
-        `Confirm deleting "${dict.name}" dictionary by typing: "Yes"\n(It will delete "${dict.name}" and all it's words)`,
+        `⚠️ Type <b>Yes</b> to confirm deleting "<b>${dict.name}</b>"
+${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
+        { parse_mode: 'HTML' },
       )
     }
 
@@ -92,7 +96,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
       this.contextState.stage = MANAGE_DICTIONARY_STAGE.CHANGE_NAME_FINISH
 
-      await this.ctx.reply(`Type in a replacement for ${dict.name}`)
+      await this.ctx.reply(...typeInReplacementFor(dict.name))
     }
   }
 
@@ -117,13 +121,13 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
         value: textInput,
       })
 
-      await this.ctx.reply(
-        `Pair "${word.value}" - "${word.translation}" \n\nHas been replaced with:\n\n"${editedWord.value}" - "${editedWord.translation}"
-      `,
-      )
+      await this.ctx.reply(...wordPairHasBeenReplaced(word, editedWord))
 
       this.contextState = { stage: MANAGE_DICTIONARY_STAGE.DEFAULT, page }
-      return this.ctx.reply(`Editing ${dictionary.name} words:`, { reply_markup: editDictionaryWordsSubmenu })
+      return this.ctx.reply(`Editing "<b>${dictionary.name}<b/>" words:`, {
+        parse_mode: 'HTML',
+        reply_markup: editDictionaryWordsSubmenu,
+      })
     }
 
     if (stage === MANAGE_DICTIONARY_STAGE.EDIT_WORD_TRANSLATION_FINISH) {
@@ -132,11 +136,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
         translation: textInput,
       })
 
-      await this.ctx.reply(
-        `Pair "${word.value}" - ${word.translation} \n\nHas been replaced with:\n\n
-      "${editedWord.value}" - "${editedWord.translation}"
-      `,
-      )
+      await this.ctx.reply(...wordPairHasBeenReplaced(word, editedWord))
 
       this.contextState = { stage: MANAGE_DICTIONARY_STAGE.DEFAULT, page }
       return this.ctx.reply(`Editing ${dictionary.name} words:`, { reply_markup: editDictionaryWordsSubmenu })
@@ -144,7 +144,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
     if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM && textInput.trim().toLowerCase() === 'yes') {
       await this.ctx.deleteDictionary(editDictId)
-      await this.ctx.reply(`Dictionary "${dictionary.name}" has been deleted`)
+      await this.ctx.reply(`Dictionary "<b>${dictionary.name}</b>" has been deleted`, { parse_mode: 'HTML' })
       return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionary?._id })
     } else if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM) {
       return await this.ctx.enterDialog('manageDictionary')
@@ -162,9 +162,10 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
 
       const dict = await this.getEditDictionary()
 
+      const newName = textInput.trim()
       //@ts-ignore
       await this.ctx.user.updateDictionary({ ...dict._doc, name: textInput.trim() })
-      await this.ctx.reply(`The dictionary has been renamed!`)
+      await this.ctx.reply(`🎉 The dictionary has been renamed to "<b>${newName}</b>"!`, { parse_mode: 'HTML' })
 
       return await this.ctx.enterDialog('manageDictionary')
     }

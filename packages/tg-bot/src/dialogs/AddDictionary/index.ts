@@ -46,7 +46,8 @@ class AddDictionary extends Dialog<'addDictionary'> {
       }
       this.ctx.setActiveDictionary(dictionary._id.toString())
 
-      await this.ctx.reply(`New dictionary ${dictionaryName} has been created and set as a active one!`, {
+      await this.ctx.reply(`🎉 New dictionary "<b>${dictionaryName}</b>" has been created and set as an active one!`, {
+        parse_mode: 'HTML',
         reply_markup: addOrLearnMenu,
       })
     }

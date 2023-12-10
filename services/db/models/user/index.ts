@@ -71,7 +71,7 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
   },
 )
 
-userSchema.static('createIfNotExits', async function (userInput, dictId) {
+userSchema.static('createIfNotExits', async function (userInput) {
   const user = await this.findOne({ tgId: userInput.tgId })
   if (user) {
     return user
