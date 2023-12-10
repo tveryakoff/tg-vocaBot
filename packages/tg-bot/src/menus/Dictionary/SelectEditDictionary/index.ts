@@ -10,7 +10,7 @@ export const selectEditDictionaryMenu = new SelectDictionaryMenuFacade({
   },
   onSelect: async (ctx: MyContext & { menu: MenuControlPanel }, dict) => {
     const contextData = ctx.getDialogContext('manageDictionary')
-    ctx.setDialogContext('manageDictionary', { ...contextData, editDictId: dict?._id.toString() })
+    ctx.setDialogContext('manageDictionary', { ...contextData, page: 0, editDictId: dict?._id.toString() })
     ctx.menu.nav('manageDictionaryMenu')
   },
 })

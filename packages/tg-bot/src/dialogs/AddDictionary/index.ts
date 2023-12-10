@@ -40,8 +40,12 @@ class AddDictionary extends Dialog<'addDictionary'> {
     const dictionaryName = this.ctx.message?.text
 
     if (stage === ADD_DICTIONARY_STAGE.NAME) {
-      const dictionary = await this.ctx.user.createDictionary({ name: dictionaryName, words: [] })
-      if (!dictionary) {
+      const { dictionary, error } = await this.ctx.user.createDictionary({ name: dictionaryName, words: [] })
+      if (error?.message) {
+        await this.ctx.reply(error.message)
+        return this.enterDialog('addDictionary', { stage: ADD_DICTIONARY_STAGE.DEFAULT })
+      }
+      if (!dictionary && !error) {
         throw new Error('Error while creating a new dictionary')
       }
       this.ctx.setActiveDictionary(dictionary._id.toString())

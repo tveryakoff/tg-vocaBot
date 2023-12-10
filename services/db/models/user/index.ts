@@ -34,11 +34,27 @@ const userSchema = new Schema<User & UserMethods, UserModel>(
   {
     methods: {
       createDictionary: async function (dictionaryInput) {
+        await this.populate('dictionaries', ['name'])
+        if (
+          this.dictionaries.find(
+            (d: DictionaryMongooseHydrated) =>
+              d.name.trim().toLowerCase() === dictionaryInput.name.trim().toLowerCase(),
+          )
+        ) {
+          return {
+            error: {
+              message: `Dictionary with that name already exists`,
+            },
+          }
+        }
         const dict = new Dictionary(dictionaryInput)
         await dict.save()
         this.dictionaries.push(dict.id)
         await this.save()
-        return dict
+        return {
+          dictionary: dict,
+          error: null,
+        }
       },
 
       getDictionary: async function (dictId) {

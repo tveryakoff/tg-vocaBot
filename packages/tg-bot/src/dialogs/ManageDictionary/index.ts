@@ -145,7 +145,7 @@ ${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
     if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM && textInput.trim().toLowerCase() === 'yes') {
       await this.ctx.deleteDictionary(editDictId)
       await this.ctx.reply(`Dictionary "<b>${dictionary.name}</b>" has been deleted`, { parse_mode: 'HTML' })
-      return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionary?._id })
+      return await this.ctx.enterDialog('manageDictionary', { editDictId: this.ctx.activeDictionaryId })
     } else if (stage === MANAGE_DICTIONARY_STAGE.DELETE_DICT_CONFIRM) {
       return await this.ctx.enterDialog('manageDictionary')
     }

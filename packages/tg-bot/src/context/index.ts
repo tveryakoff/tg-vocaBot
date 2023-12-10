@@ -18,6 +18,10 @@ export class MyContext extends Context {
     super(update, api, me)
   }
 
+  get activeDictionaryId() {
+    return this.session.activeDictionaryId
+  }
+
   getDialogContext<T extends DialogName>(dialogName: T): DIALOG_STATE[T] {
     return this.session[dialogName]
   }

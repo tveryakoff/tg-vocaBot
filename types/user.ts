@@ -49,7 +49,9 @@ export type CheckWordResponse = { isCorrect: boolean; correctAnswer: string }
 export type EditWordInput = Partial<WordMongooseHydrated>
 
 export type UserMethods = {
-  createDictionary: (dictInput: Dictionary) => Promise<DictionaryMongooseHydrated>
+  createDictionary: (
+    dictInput: Dictionary,
+  ) => Promise<{ dictionary?: DictionaryMongooseHydrated; error?: { message: string } }>
   getDictionary: (dictId: string) => Promise<DictionaryMongooseHydrated>
   updateDictionary: (dictData: Dictionary) => Promise<DictionaryMongooseHydrated>
   deleteDictionary: (dictId: string) => Promise<UserMongooseHydrated>
