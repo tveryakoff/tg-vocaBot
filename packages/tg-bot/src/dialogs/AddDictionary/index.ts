@@ -20,8 +20,8 @@ class AddDictionary extends Dialog<'addDictionary'> {
     }
 
     if (this.ctx.user.dictionaries.length >= 5) {
-      return await this.ctx.reply(`A user can't have more than 5 dictionaries, sorry!`)
-      //TODO redirect to edit dictionaries
+      await this.ctx.reply(`A user can't have more than 5 dictionaries, sorry!`)
+      return this.ctx.enterDialog('manageDictionary')
     }
 
     const { stage } = this.contextState

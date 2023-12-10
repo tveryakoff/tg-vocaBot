@@ -42,12 +42,15 @@ export class AddWordsDialog extends Dialog {
 
       if (await activeDictionary.hasWord(wordValue)) {
         return await this.ctx.reply(
-          `"${wordValue.toLowerCase().trim()}" already exists in that dictionary, try to add another word:`,
+          `"<b>${wordValue.toLowerCase().trim()}</b>" already exists in that dictionary, try to add another word:`,
+          { parse_mode: 'HTML' },
         )
       }
       this.contextState = { stage: ADD_WORDS_STAGE.TRANSLATION, word: this.ctx.message?.text }
 
-      return await this.ctx.reply(`Type in a translation for ${this.ctx.message?.text}`)
+      return await this.ctx.reply(`Type in a translation for "<b>${this.ctx.message?.text}</b>"`, {
+        parse_mode: 'HTML',
+      })
     } else if (stage === ADD_WORDS_STAGE.TRANSLATION) {
       const translation = this.ctx.message?.text
 
@@ -59,10 +62,11 @@ export class AddWordsDialog extends Dialog {
       }
 
       if (await activeDictionary.hasWord(state.word, translation)) {
+        const translationLowercased = translation.toLowerCase().trim()
         return await this.ctx.reply(
-          `Translation "${translation
-            .toLowerCase()
-            .trim()}" already exists in that dictionary!\n\nAdd another translation for "${state.word}":`,
+          `Translation "<b>${translationLowercased}</b>" already exists in that dictionary!
+Add another translation for "<b>${state.word}</b>":`,
+          { parse_mode: 'HTML' },
         )
       }
 
@@ -77,7 +81,9 @@ export class AddWordsDialog extends Dialog {
 
       if (justAdded) {
         return await this.ctx.reply(
-          `A new pair ${justAdded.value} - ${justAdded.translation} has been added to ${activeDictionary.name}!\n\nEnter a new word:`,
+          `🎉 A new pair "<b>${justAdded.value}</b>" - "<b>${justAdded.translation}</b>" has been added to "<b>${activeDictionary.name}</b>"!
+Enter a new word:`,
+          { parse_mode: 'HTML' },
         )
       } else {
         return await this.ctx.reply(`${message ? message : 'An error occurred during adding word, try again later'}`)
