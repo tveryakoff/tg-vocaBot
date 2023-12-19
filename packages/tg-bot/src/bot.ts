@@ -13,37 +13,31 @@ import { selectEditDictionaryMenu } from './menus/Dictionary/SelectEditDictionar
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from './menus/Dictionary/ManageDictionary'
 import skipContextMenu from './menus/SkipContextMenu'
 import { showContextHint } from './menus/ShowContextHint'
+import ErrorHandler from '../../../services/error/ErrorHandler'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
+  private readonly errorHandler: ErrorHandler
 
   constructor() {
     this.bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
+    this.errorHandler = new ErrorHandler()
   }
 
-  private static async errorBoundary(err: BotError<MyContext> & { method: string }) {
-    if (err instanceof HttpError) {
-      console.error(`HttpError occurred in Dialog middleware`, err)
-      await err.ctx.reply(`Seems like we're having some network problems, please try again`)
-      return
-    }
+  private async resetState(ctx: MyContext) {
+    await ctx.reply(`Oops, an error occurred, let's try again!`)
+    return await ctx.enterDialog('start')
+  }
 
-    const isProd = process.env.NODE_ENV === 'production'
-
-    console.dir(Object.keys(err))
+  private async errorBoundary(err: BotError<MyContext> & { method: string }) {
+    const originalError: Error = err.error as Error
 
     //@ts-ignore
-    if (isProd && err.error.method === 'editMessageReplyMarkup') {
+    if (originalError.method === 'editMessageReplyMarkup') {
       return
     }
 
-    if (isProd) {
-      await err.ctx.reply(`Oops, an error occurred, let's try again!`)
-      console.error(`Bot error in Dialog middleware`, err)
-      return await err.ctx.enterDialog('start')
-    }
-
-    throw err
+    await this.errorHandler.handleError(originalError, () => this.resetState(err.ctx))
   }
 
   async connectToDb() {
@@ -123,7 +117,7 @@ export class TgBot {
     await this.setCommands()
     this.setUserDialogs()
 
-    this.bot.catch(TgBot.errorBoundary)
+    this.bot.catch(this.errorBoundary)
 
     await this.bot.start({
       onStart: () => {
