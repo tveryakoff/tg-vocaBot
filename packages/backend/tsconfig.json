@@ -13,7 +13,8 @@
     "skipLibCheck": true,
     "strictFunctionTypes": false,
     "typeRoots": ["src/types/index.d.ts"],
-    "types": [ "node" ]
+    "types": [ "node" ],
+    "noEmit": true
   },
   "include": [
     "src/**/*.ts"

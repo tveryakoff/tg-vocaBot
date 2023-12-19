@@ -10,7 +10,7 @@
     "strictFunctionTypes": false,
     "typeRoots": ["./types"],
     "strictNullChecks": false,
-    "outDir": "./dist"
+    "noEmit": true
   },
   "include": [
     "**/*.ts",

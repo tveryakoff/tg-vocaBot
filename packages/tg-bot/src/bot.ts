@@ -15,21 +15,21 @@ import skipContextMenu from './menus/SkipContextMenu'
 import { showContextHint } from './menus/ShowContextHint'
 import ErrorHandler from '../../../services/error/ErrorHandler'
 
+const errorHandler = new ErrorHandler()
+
 export class TgBot {
   public readonly bot: Bot<MyContext>
-  private readonly errorHandler: ErrorHandler
 
   constructor() {
     this.bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
-    this.errorHandler = new ErrorHandler()
   }
 
-  private async resetState(ctx: MyContext) {
+  private static async resetState(ctx: MyContext) {
     await ctx.reply(`Oops, an error occurred, let's try again!`)
     return await ctx.enterDialog('start')
   }
 
-  private async errorBoundary(err: BotError<MyContext> & { method: string }) {
+  private static async errorBoundary(err: BotError<MyContext> & { method: string }) {
     const originalError: Error = err.error as Error
 
     //@ts-ignore
@@ -37,7 +37,7 @@ export class TgBot {
       return
     }
 
-    await this.errorHandler.handleError(originalError, () => this.resetState(err.ctx))
+    await errorHandler?.handleError(originalError, () => TgBot.resetState(err.ctx))
   }
 
   async connectToDb() {
@@ -117,7 +117,7 @@ export class TgBot {
     await this.setCommands()
     this.setUserDialogs()
 
-    this.bot.catch(this.errorBoundary)
+    this.bot.catch(TgBot.errorBoundary)
 
     await this.bot.start({
       onStart: () => {

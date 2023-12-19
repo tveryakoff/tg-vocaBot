@@ -11,7 +11,7 @@
     "typeRoots": ["./types"],
     "strictNullChecks": false,
     "noImplicitAny": false,
-    "outDir": "./dist"
+    "noEmit": true
   },
   "include": [
     "**/*.ts",

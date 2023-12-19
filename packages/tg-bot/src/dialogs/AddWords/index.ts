@@ -4,6 +4,7 @@ import { ADD_WORDS_STAGE, DIALOG_STATE } from '../types'
 import { wordPairHasBeenAdded } from '../../utils'
 import skipContextMenu from '../../menus/SkipContextMenu'
 import { INITIAL_DIALOG_STATE } from '../constants'
+import AppError from '../../../../../services/error/CustomErrors'
 
 export class AddWordsDialog extends Dialog<'addWords'> {
   constructor(ctx: MyContext) {

@@ -1,10 +1,10 @@
 import AppError from '../CustomErrors'
 
-type OnTrustedError = (error: Error) => Promise<unknown> | unknown
+type OnTrustedError = (data: any) => Promise<unknown> | unknown
 
 export default class ErrorHandler {
   public async handleError(error: Error, onTrustedError: OnTrustedError): Promise<unknown> {
-    console.error(error)
+    console.error('Handling by ErrorHandler', error)
 
     if (error instanceof AppError && error.isOperational) {
       return onTrustedError?.(error)
