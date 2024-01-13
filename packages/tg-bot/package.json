@@ -29,8 +29,6 @@
   "description": "",
   "devDependencies": {
     "nodemon": "^3.0.1",
-
-
     "tsup": "^8.0.1"
   }
 }

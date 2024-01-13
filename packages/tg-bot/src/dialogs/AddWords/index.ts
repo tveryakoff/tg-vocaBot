@@ -4,7 +4,6 @@ import { ADD_WORDS_STAGE, DIALOG_STATE } from '../types'
 import { wordPairHasBeenAdded } from '../../utils'
 import skipContextMenu from '../../menus/SkipContextMenu'
 import { INITIAL_DIALOG_STATE } from '../constants'
-import AppError from '../../../../../services/error/CustomErrors'
 
 export class AddWordsDialog extends Dialog<'addWords'> {
   constructor(ctx: MyContext) {
@@ -35,7 +34,7 @@ export class AddWordsDialog extends Dialog<'addWords'> {
 
   async start(initialState?: DIALOG_STATE['addWords']) {
     if (!this.ctx.user || !this.ctx.activeDictionary) {
-      await this.ctx.reply(`Seems like you don't have a dictionary yet, let me create one for you!`)
+      await this.ctx.reply(`You first have to select/create a dictionary to work with`)
       return await this.enterDialog('start')
     }
 
