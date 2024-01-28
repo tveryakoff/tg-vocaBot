@@ -1,0 +1,34 @@
+{
+  "name": "tg-bot",
+  "version": "1.0.0",
+  "main": ".src/index.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsup",
+    "start": "node dist/index.js",
+    "lint": "eslint ./src",
+    "dev": "nodemon --watch ./src -e js,ts ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tveriakov Dmitrii",
+  "license": "ISC",
+  "dependencies": {
+    "@grammyjs/conversations": "^1.1.2",
+    "@grammyjs/menu": "^1.2.1",
+    "@grammyjs/storage-mongodb": "^2.4.0",
+    "@types/axios": "^0.14.0",
+    "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
+    "grammy": "^1.18.1",
+    "mongoose": "^8.0.1",
+    "natural": "^6.10.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@personal.bitbucket.org:bigdict-tg/monorepo.git"
+  },
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "tsup": "^8.0.1"
+  }
+}

@@ -1,0 +1,11 @@
+export const SECRET = 'My secret is big dictionary'
+
+export const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzBbRnU+oCaSt1SM/AyiW
+REZXWWLj17P9xGzJgqq6WrSvyjSGYvmxbTaJTWVDxTEkzXV7+z7Jgrog6KjidzCy
+sNz6jKxdDoD083yJEU+JBLey2pJ2aK3nOLwedP8zgI+xKq6PC2+L12giE5UsSM5h
+u1lXeOaWbNpNIQPpPhQGsWr5MPPMEM4JHGYCW5hejgKFObYTYekstjI8Qd9Zs4+w
+IM5ts2VEepcXtRGJpNo6y4/JbEs/TYa3st8p2u1+agz1tnumsf9dB9rBRN3l4eQ1
+4lXxGQfu9z2vAtBtWXr5IgNzZIAf7yhjLPltBAunWCDPa0p5SmYKrbFuoUg/89iK
+ywIDAQAB
+-----END PUBLIC KEY-----`
