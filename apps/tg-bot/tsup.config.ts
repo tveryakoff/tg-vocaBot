@@ -8,4 +8,5 @@ export default defineConfig({
   minify: true,
   format: ['cjs'],
   target: 'node18',
+  outDir: './dist',
 })

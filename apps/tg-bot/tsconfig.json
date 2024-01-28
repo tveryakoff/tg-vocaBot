@@ -1,9 +1,5 @@
 {
-  "ts-node": {
-    "files": true
-  },
   "compilerOptions": {
-    "outDir": "dist",
     "target": "es2017",
     "module": "commonjs",
     "esModuleInterop": true,
@@ -12,11 +8,13 @@
     "strict": true,
     "skipLibCheck": true,
     "strictFunctionTypes": false,
-    "typeRoots": ["src/types/index.d.ts"],
-    "types": [ "node" ]
+    "typeRoots": ["./types"],
+    "strictNullChecks": false,
+    "noEmit": true
   },
   "include": [
-    "src/**/*.ts"
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"

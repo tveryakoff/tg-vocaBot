@@ -1,4 +1,4 @@
-import { Bot, BotError, HttpError, session } from 'grammy'
+import { Bot, BotError, session } from 'grammy'
 import { MyContext } from './context'
 import mongoose from 'mongoose'
 import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
@@ -13,37 +13,52 @@ import { selectEditDictionaryMenu } from './menus/Dictionary/SelectEditDictionar
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from './menus/Dictionary/ManageDictionary'
 import skipContextMenu from './menus/SkipContextMenu'
 import { showContextHint } from './menus/ShowContextHint'
+import AppError from '../../../services/error/CustomErrors'
 
 export class TgBot {
   public readonly bot: Bot<MyContext>
+  private sessionCollection: any
+  private mongoDbStorage: any
 
   constructor() {
     this.bot = new Bot<MyContext>(`${process.env.API_KEY_BOT}`, { ContextConstructor: MyContext })
   }
 
-  private static async errorBoundary(err: BotError<MyContext> & { method: string }) {
-    if (err instanceof HttpError) {
-      console.error(`HttpError occurred in Dialog middleware`, err)
-      await err.ctx.reply(`Seems like we're having some network problems, please try again`)
-      return
-    }
+  private getSessionKey(ctx: MyContext) {
+    return `${ctx?.chat?.id}`
+  }
 
-    const isProd = process.env.NODE_ENV === 'production'
+  private async resetState(ctx: MyContext) {
+    await ctx.reply(`Oops, an error occurred, let's try again!`)
 
-    console.dir(Object.keys(err))
+    // Grammy bug, err.ctx doesn't update session in DB, have to manually update session using mongoDbStorage
+    await this.mongoDbStorage.write(this.getSessionKey(ctx), {
+      activeDialogName: 'start',
+      activeDictionaryId: ctx?.session?.activeDictionaryId,
+    })
+    return ctx.enterDialog('start')
+  }
+
+  private async restart(ctx: MyContext) {
+    await this.resetState(ctx)
+    process.exit(1)
+  }
+
+  private async errorBoundary(err: BotError<MyContext> & { method: string }) {
+    const originalError: Error = err.error as Error
 
     //@ts-ignore
-    if (isProd && err.error.method === 'editMessageReplyMarkup') {
+    if (originalError.method === 'editMessageReplyMarkup') {
       return
     }
 
-    if (isProd) {
-      await err.ctx.reply(`Oops, an error occurred, let's try again!`)
-      console.error(`Bot error in Dialog middleware`, err)
-      return await err.ctx.enterDialog('start')
+    //@ts-ignore
+    if (originalError instanceof AppError && originalError.isOperational) {
+      await this.resetState(err.ctx)
     }
 
-    throw err
+    console.error('Untrusted error:', originalError, '\n Restarting bot...')
+    return this.restart(err.ctx)
   }
 
   async connectToDb() {
@@ -59,12 +74,10 @@ export class TgBot {
   }
 
   async loadSession() {
-    const collection = mongoose.connection.db.collection<ISession>('sessions')
-
     this.bot.use(
       session({
         initial: () => ({ ...INITIAL_SESSION_STATE }),
-        storage: new MongoDBAdapter<SessionData>({ collection }),
+        storage: this.mongoDbStorage,
       }),
     )
   }
@@ -117,13 +130,15 @@ export class TgBot {
 
   async start() {
     await this.connectToDb()
+    this.sessionCollection = mongoose.connection.db.collection<ISession>('sessions')
+    this.mongoDbStorage = new MongoDBAdapter<SessionData>({ collection: this.sessionCollection })
     await this.loadSession()
     await this.enrichContextObject()
     this.setMenus()
     await this.setCommands()
     this.setUserDialogs()
 
-    this.bot.catch(TgBot.errorBoundary)
+    this.bot.catch(this.errorBoundary.bind(this))
 
     await this.bot.start({
       onStart: () => {

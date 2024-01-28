@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build --prefix ./packages/tg-bot",
-    "start": "npm run start --prefix ./packages/tg-bot"
+    "build": "npm run build --prefix apps/tg-bot",
+    "start": "npm run start --prefix apps/tg-bot"
   },
   "private": true,
   "devDependencies": {
@@ -23,8 +23,7 @@
     "typescript": "^4.5.4"
   },
   "workspaces": [
-    "packages/backend",
-    "packages/tg-bot"
+    "apps/*"
   ],
   "dependencies": {
     "dotenv": "^16.3.1",

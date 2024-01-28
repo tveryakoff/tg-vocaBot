@@ -11,7 +11,7 @@ import User from '../../../../services/db/models/user'
 export class MyContext extends Context {
   user: UserMongooseHydrated | null
   public activeDictionary: DictionaryMongooseHydrated | null
-  public readonly session: SessionData
+  public session: SessionData
   public dialog: Dialog
 
   constructor(update: Update, api: Api, me: UserFromGetMe) {

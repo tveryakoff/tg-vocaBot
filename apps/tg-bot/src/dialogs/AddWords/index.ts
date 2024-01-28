@@ -34,7 +34,7 @@ export class AddWordsDialog extends Dialog<'addWords'> {
 
   async start(initialState?: DIALOG_STATE['addWords']) {
     if (!this.ctx.user || !this.ctx.activeDictionary) {
-      await this.ctx.reply(`Seems like you don't have a dictionary yet, let me create one for you!`)
+      await this.ctx.reply(`You first have to select/create a dictionary to work with`)
       return await this.enterDialog('start')
     }
 
