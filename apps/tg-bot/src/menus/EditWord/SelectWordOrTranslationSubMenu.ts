@@ -1,17 +1,17 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
-import { WordMongooseHydrated } from '../../../../../types/user'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
+import { WordDto } from '../../../../../services/db/types'
 
 type Data = {
-  word?: WordMongooseHydrated
+  word?: WordDto
 }
 
 export type Options = {
   id: string
   getData: (ctx: MyContext) => Data
-  gotToEditWordValue: (ctx: MyContext, word?: WordMongooseHydrated) => unknown
-  gotToEditWordTranslation: (ctx: MyContext, word?: WordMongooseHydrated) => unknown
+  gotToEditWordValue: (ctx: MyContext, word?: WordDto) => unknown
+  gotToEditWordTranslation: (ctx: MyContext, word?: WordDto) => unknown
   goBack: (ctx: MyContext & { menu: MenuControlPanel }) => unknown
 }
 

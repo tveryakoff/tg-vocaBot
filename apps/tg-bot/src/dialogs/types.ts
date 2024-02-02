@@ -1,4 +1,4 @@
-import { WordMongooseHydrated } from '../../../../types/user'
+import { WordDto } from '../../../../services/db/types'
 
 export type DialogName =
   | 'addWords'
@@ -24,7 +24,7 @@ export type MANAGE_DICTIONARY_STATE = Partial<{
   editDictId: string
   page: number
   total: number
-  word: WordMongooseHydrated
+  word: WordDto
 }>
 
 export enum MANAGE_DICTIONARY_STAGE {
@@ -90,7 +90,7 @@ export enum EDIT_WORDS_STAGE {
 }
 
 export type EDIT_WORDS_STATE = Partial<{
-  word?: WordMongooseHydrated
+  word?: WordDto
   stage: EDIT_WORDS_STAGE
   page?: number
   total?: number

@@ -1,16 +1,16 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
-import { WordMongooseHydrated } from '../../../../../types/user'
-import Dictionary from '../../../../../services/db/models/dictionary'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
+import { WordDto } from '../../../../../services/db/types'
+import DbAccessLayer  from '../../../../../services/db/DataAcessLayer'
 
 type Options = {
   id: string
-  getData: (ctx: MyContext) => { page?: number; word?: WordMongooseHydrated }
+  getData: (ctx: MyContext) => { page?: number; word?: WordDto }
   setData: (ctx: MyContext, data: any) => void
   getDictId: (ctx: MyContext) => string
-  onDeleteWord: (ctx: MyContext, word: WordMongooseHydrated) => Promise<any>
-  onWordSelect: (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => any
+  onDeleteWord: (ctx: MyContext, word: WordDto) => Promise<any>
+  onWordSelect: (ctx: MyContext & { menu: MenuControlPanel }, word: WordDto) => any
 }
 
 export default class EditWordMenu extends Menu<MyContext> {
@@ -24,7 +24,7 @@ export default class EditWordMenu extends Menu<MyContext> {
       }
       const { page = 0 } = data
       const dictId = getDictId(ctx)
-      const dictionary = await Dictionary.findById(dictId)
+      const dictionary = await DbAccessLayer.getDictionary(dictId)
       if (!dictionary) {
         return
       }

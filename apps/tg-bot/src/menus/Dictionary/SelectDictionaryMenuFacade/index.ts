@@ -1,25 +1,24 @@
 import { MyContext } from '../../../context'
-import { DictionaryMongooseHydrated } from '../../../../../../types/user'
 import { Menu } from '@grammyjs/menu'
+import { Dictionary } from '../../../../../../services/db/DataAcessLayer'
 
 type Params = {
   id: string
-  getDictionaries: (ctx: MyContext) => Promise<DictionaryMongooseHydrated[]>
-  onSelect: (ctx: MyContext, dict: DictionaryMongooseHydrated) => any
+  onSelect: (ctx: MyContext, dict: Dictionary) => any
 }
 
 class SelectDictionaryMenu extends Menu<MyContext> {
-  private readonly getDictionaries: (ctx: MyContext) => Promise<DictionaryMongooseHydrated[]>
-  private onSelect: (ctx: MyContext, dict: DictionaryMongooseHydrated) => any
+  private onSelect: (ctx: MyContext, dict: Dictionary) => any
 
-  constructor({ id, getDictionaries, onSelect }: Params) {
+  constructor({ id, onSelect }: Params) {
     super(id)
-    this.getDictionaries = getDictionaries
     this.onSelect = onSelect
 
     this.row().dynamic(async (ctx, range) => {
-      const dictionaries = await this.getDictionaries(ctx)
+      //@ts-ignore
+      const dictionaries: Array<{ name: string; _id: string }> = await ctx.user.getPopulatedDictionaries(['name'])
       for (const dict of dictionaries) {
+        //@ts-ignore
         range.text(dict?.name, async (ctx) => this.onSelect(ctx, dict)).row()
       }
     })
