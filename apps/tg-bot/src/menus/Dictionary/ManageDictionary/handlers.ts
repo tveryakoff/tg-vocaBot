@@ -1,12 +1,12 @@
 import { MyContext } from '../../../context'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
-import { WordMongooseHydrated } from '../../../../../../types/user'
-import Dictionary from '../../../../../../services/db/models/dictionary'
+import DbAccessLayer from '../../../../../../services/db/DataAcessLayer'
+import { WordDto } from '../../../../../../services/db/types'
 
-export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
+export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordDto) => {
   const wordId = word._id.toString()
   const { page, ...data } = ctx.getDialogContext('manageDictionary')
-  const dictionary = await Dictionary.findById(data.editDictId)
+  const dictionary = await DbAccessLayer.getDictionary(data.editDictId)
   if (!dictionary) {
     return
   }

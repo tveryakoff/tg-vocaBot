@@ -3,9 +3,8 @@ import { MyContext } from '../../context'
 import { DIALOG_STATE, MANAGE_DICTIONARY_STAGE } from '../types'
 import { selectEditDictionaryMenu } from '../../menus/Dictionary/SelectEditDictionary'
 import manageDictionaryMenu, { editDictionaryWordsSubmenu } from '../../menus/Dictionary/ManageDictionary'
-import Dictionary from '../../../../../services/db/models/dictionary'
-import { DictionaryMongooseHydrated } from '../../../../../types/user'
 import { typeInReplacementFor, wordPairHasBeenReplaced } from '../../utils'
+import DbAccessLayer, { Dictionary } from '../../../../../services/db/DataAcessLayer'
 
 class ManageDictionary extends Dialog<'manageDictionary'> {
   constructor(ctx: MyContext) {
@@ -18,7 +17,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
   }
 
   selectEditDictionaryId() {
-    if (this.contextState.editDictId) {
+    if (this.contextState?.editDictId) {
       return this.contextState.editDictId
     }
     if (this.ctx.user.dictionaries.length === 1 && this.ctx.activeDictionary) {
@@ -28,12 +27,12 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     }
   }
 
-  async getEditDictionary(): Promise<DictionaryMongooseHydrated | null> {
+  async getEditDictionary(): Promise<Dictionary | null> {
     if (!this.contextState.editDictId) {
       return null
     }
 
-    return Dictionary.findById(this.contextState.editDictId)
+    return DbAccessLayer.getDictionary(this.contextState.editDictId)
   }
 
   async start(initialState: DIALOG_STATE['manageDictionary']) {
@@ -42,7 +41,7 @@ class ManageDictionary extends Dialog<'manageDictionary'> {
     }
 
     if (!this.ctx.user.dictionaries.length) {
-      await this.ctx.reply(`Seems like you don't have any dictionaries yer, let's create one`)
+      await this.ctx.reply(`Seems like you don't have any dictionaries yet, let's create one`)
       return this.ctx.enterDialog('addDictionary')
     }
 
@@ -102,7 +101,7 @@ ${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
 
   async handleTextInput(): Promise<any> {
     const { stage, word, page, editDictId } = this.contextState
-    const dictionary = await Dictionary.findById(editDictId)
+    const dictionary = await DbAccessLayer.getDictionary(editDictId)
 
     if (!dictionary) {
       return
@@ -124,7 +123,7 @@ ${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
       await this.ctx.reply(...wordPairHasBeenReplaced(word, editedWord))
 
       this.contextState = { stage: MANAGE_DICTIONARY_STAGE.DEFAULT, page }
-      return this.ctx.reply(`Editing "<b>${dictionary.name}<b/>" words:`, {
+      return this.ctx.reply(`Editing "<b>${dictionary.name}</b>" words:`, {
         parse_mode: 'HTML',
         reply_markup: editDictionaryWordsSubmenu,
       })
@@ -161,11 +160,8 @@ ${!!dict.words.length ? `(It will delete ${dict.words.length} words)` : ''}`,
         })
       }
 
-      const dict = await this.getEditDictionary()
-
       const newName = textInput.trim()
-      //@ts-ignore
-      await this.ctx.user.updateDictionary({ ...dict._doc, name: textInput.trim() })
+      await Dictionary.updateDictionary({ _id: this.contextState.editDictId, name: textInput.trim() })
       await this.ctx.reply(`🎉 The dictionary has been renamed to "<b>${newName}</b>"!`, { parse_mode: 'HTML' })
 
       return await this.ctx.enterDialog('manageDictionary')
