@@ -1,15 +1,21 @@
-import { Word } from '../../types/user'
+import { Types } from 'mongoose'
 
 export type UserDto = {
-  userName: string
-  firstName: string
-  lastName: string
-  tgId: string
-  languageCode: string
-  dictionaries: string[]
+  _id?: string
+  tgId: string | number
+  firstName?: string
+  lastName?: string
+  userName?: string
+  dictionaries: Types.ObjectId[]
+  languageCode?: string
 }
 
-export type Word = {
+export type User = Omit<UserDto, 'dictionaries'> & {
+  dictionaries: Types.ObjectId[]
+}
+
+export type WordDto = {
+  _id?: string
   value: string
   translation: string
   context?: string
@@ -19,10 +25,14 @@ export type Word = {
   mark?: 1 | 2 | 3
 }
 
+export type Word = WordDto & {
+  _doc?: WordDto
+}
+
 export type DictionaryDto = {
-  _id?: string
   name: string
   targetLanguage?: string
   translationLanguage?: string
   words: Array<Word>
+  _id?: string
 }
