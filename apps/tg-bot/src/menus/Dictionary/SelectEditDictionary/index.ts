@@ -5,6 +5,9 @@ import manageDictionarySubMenu from '../ManageDictionary'
 
 export const selectEditDictionaryMenu = new SelectDictionaryMenuFacade({
   id: 'selectEditDictionary',
+  getDictionaries: async (ctx) => {
+    return await ctx.loadDictionariesNames(['name'])
+  },
   onSelect: async (ctx: MyContext & { menu: MenuControlPanel }, dict) => {
     const contextData = ctx.getDialogContext('manageDictionary')
     ctx.setDialogContext('manageDictionary', { ...contextData, page: 0, editDictId: dict?._id.toString() })

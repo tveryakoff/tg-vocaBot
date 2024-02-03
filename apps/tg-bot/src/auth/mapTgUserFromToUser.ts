@@ -1,7 +1,7 @@
 import { Context } from 'grammy'
-import { UserDto } from '../../../../services/db/types'
+import { User } from '../../../../types/user'
 
-export const mapTgUserFromToUser = (userInput: Context['from']): UserDto => ({
+export const mapTgUserFromToUser = (userInput: Context['from']): User => ({
   userName: userInput?.username,
   firstName: userInput?.first_name,
   lastName: userInput.last_name,

@@ -1,11 +1,11 @@
 import { Menu } from '@grammyjs/menu'
 import { MyContext } from '../../context'
+import { Word } from '../../../../../types/user'
 import natural from 'natural'
-import { WordDto } from '../../../../../services/db/types'
 
 const tokenizer = new natural.WordTokenizer()
 
-const wrapWordInSpoiler = async ({ context: sentenceRow, value: valueRaw }: Partial<WordDto>): Promise<string> => {
+const wrapWordInSpoiler = async ({ context: sentenceRow, value: valueRaw }: Partial<Word>): Promise<string> => {
   const valueLowerCased = valueRaw.trim().toLowerCase()
   const valueStem = natural.LancasterStemmer.stem(valueLowerCased) || valueLowerCased
 

@@ -1,15 +1,15 @@
+import { WordMongooseHydrated } from '../../../../../types/user'
 import { MyContext } from '../../context'
 import { EDIT_WORDS_STAGE } from '../../dialogs/types'
 import { MenuControlPanel } from '@grammyjs/menu/out/menu'
-import { WordDto } from '../../../../../services/db/types'
 
-export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordDto) => {
+export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, word: WordMongooseHydrated) => {
   try {
     const wordId = word._id.toString()
     await ctx.activeDictionary.deleteWord(wordId)
 
     const contextData = ctx.getDialogContext('editWords')
-    // ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
+    ctx.activeDictionary.words = ctx.activeDictionary.words.filter((w) => w.value !== word.value)
 
     const { total } = await ctx.activeDictionary.getWords({ page: contextData.page })
 
@@ -24,11 +24,11 @@ export const deleteWord = async (ctx: MyContext & { menu: MenuControlPanel }, wo
 
     await ctx.menu.update()
   } catch (e) {
-    console.log('e', e)
+    console.log('e')
   }
 }
 
-export const goToEditWordValue = async (ctx: MyContext, word: WordDto, page = 0) => {
+export const goToEditWordValue = async (ctx: MyContext, word: WordMongooseHydrated, page = 0) => {
   return ctx.enterDialog('editWords', {
     page: page || 0,
     word: word,
@@ -36,7 +36,7 @@ export const goToEditWordValue = async (ctx: MyContext, word: WordDto, page = 0)
   })
 }
 
-export const goToEditWordTranslation = async (ctx: MyContext, word: WordDto, page = 0) => {
+export const goToEditWordTranslation = async (ctx: MyContext, word: WordMongooseHydrated, page = 0) => {
   return ctx.enterDialog('editWords', {
     page: page || 0,
     word: word,

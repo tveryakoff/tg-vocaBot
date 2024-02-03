@@ -1,15 +1,16 @@
 import { Api, Context } from 'grammy'
+import { Dictionary, DictionaryMongooseHydrated, UserMongooseHydrated } from '../../../../types/user'
 import { DIALOG_STATE, DialogName } from '../dialogs/types'
 import { Update, UserFromGetMe } from 'grammy/types'
 import { Dialog } from '../dialogs'
 import { SessionData } from './types'
 import { mapTgUserFromToUser } from '../auth/mapTgUserFromToUser'
 import { createDialogInstance, DIALOG_NAMES } from './constants'
-import DbAccessLayer, { User, Dictionary } from '../../../../services/db/DataAcessLayer'
+import User from '../../../../services/db/models/user'
 
 export class MyContext extends Context {
-  user: User
-  public activeDictionary: Dictionary | null
+  user: UserMongooseHydrated | null
+  public activeDictionary: DictionaryMongooseHydrated | null
   public session: SessionData
   public dialog: Dialog
 
@@ -31,7 +32,7 @@ export class MyContext extends Context {
 
   async setActiveDictionary(dictId: string) {
     this.session.activeDictionaryId = dictId
-    this.activeDictionary = await DbAccessLayer.getDictionary(dictId)
+    this.activeDictionary = await this.user.getDictionary(this.session.activeDictionaryId)
   }
 
   async deleteDictionary(deleteDictId: string) {
@@ -42,8 +43,8 @@ export class MyContext extends Context {
 
     const isActive = deleteDictId === this.session.activeDictionaryId
 
-    await this.user.deleteDictionary(deleteDictId)
-    const dictId = this.user.dictionaries?.[0]._id.toString()
+    this.user = await this.user.deleteDictionary(deleteDictId)
+    const dictId = (this.user.dictionaries as DictionaryMongooseHydrated[])[0]._id.toString()
 
     if (isActive) {
       await this.setActiveDictionary(dictId)
@@ -53,7 +54,7 @@ export class MyContext extends Context {
   }
 
   async loadDataIntoContext() {
-    this.user = await DbAccessLayer.createUserIfNotExists(mapTgUserFromToUser(this.from))
+    this.user = await User.createIfNotExits(mapTgUserFromToUser(this.from))
 
     if (!this.user) {
       throw new Error('User not found')
@@ -71,6 +72,15 @@ export class MyContext extends Context {
         this.dialog = dialog
       }
     }
+  }
+
+  async loadDictionariesNames(fields: Array<keyof Dictionary>) {
+    if (this.user.populated('dictionaries')) {
+      return this.user.dictionaries as DictionaryMongooseHydrated[]
+    }
+
+    await this.user.populate('dictionaries', ...fields)
+    return this.user.dictionaries as DictionaryMongooseHydrated[]
   }
 
   async clearDialogSessionData() {
