@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
-import { Word } from '../../../../types/user'
+import { WordDto } from '../../types'
 const { Schema } = mongoose
 
-export const wordSchema = new Schema<Word>(
+export const wordSchema = new Schema<WordDto>(
   {
     value: {
       type: String,
